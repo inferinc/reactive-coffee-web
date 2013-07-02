@@ -2,7 +2,7 @@
   font-family: 'Architects Daughter';
   font-style: normal;
   font-weight: 400;
-  src: local('Architects Daughter'), local('ArchitectsDaughter'), url(../fonts/ArchitectsDaughter.woff) format('woff');
+  src: local('Architects Daughter'), local('ArchitectsDaughter'), url(fonts/ArchitectsDaughter.woff) format('woff');
 }
 
 /* http://meyerweb.com/eric/tools/css/reset/ 
