@@ -184,6 +184,9 @@ module.exports = function (grunt) {
         jade: {
             dist: {
                 options: {
+                    processContent: function(x) {
+                        return x.replace(/#{/g, '\\#{');
+                    },
                     pretty: true
                 },
                 files: [{
