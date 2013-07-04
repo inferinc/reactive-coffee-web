@@ -1,5 +1,7 @@
 // Generated on 2013-07-01 using generator-webapp 0.2.6
 'use strict';
+require('coffee-script');
+var pygmentize = require('./pygmentize')
 var LIVERELOAD_PORT = 35729;
 var lrSnippet = require('connect-livereload')({port: LIVERELOAD_PORT});
 var mountFolder = function (connect, dir) {
@@ -24,10 +26,21 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         yeoman: yeomanConfig,
+        pages: {
+            /*options: {
+                pageSrc: 'src/pages'
+            },*/
+            posts: {
+                src: 'src/pages',
+                dest: 'dev',
+                layout: 'src/layouts/base.jade',
+                url: 'posts/:title'
+            }
+        },
         watch: {
             jade: {
-                files: ['<% yeoman.app %>/*.jade'],
-                tasks: ['jade']
+                files: ['<%= yeoman.app %>/*.jade'],
+                tasks: ['jade', 'pygmentize']
             },
             coffee: {
                 files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee'],
@@ -182,6 +195,16 @@ module.exports = function (grunt) {
                 }]
             }
         },
+        pygmentize: {
+            dist: {
+                files: [{
+                    expand: true,
+                    cwd: '.tmp',
+                    src: ['*.html'],
+                    dest: '.tmp'
+                }]
+            }
+        },
         // not used since Uglify task does concat,
         // but still available if needed
         /*concat: {
@@ -317,6 +340,8 @@ module.exports = function (grunt) {
         }
     });
 
+    pygmentize(grunt);
+
     grunt.registerTask('server', function (target) {
         if (target === 'dist') {
             return grunt.task.run(['build', 'open', 'connect:dist:keepalive']);
@@ -325,6 +350,7 @@ module.exports = function (grunt) {
         grunt.task.run([
             'clean:server',
             'jade',
+            'pygmentize',
             'concurrent:server',
             'connect:livereload',
             'open',
@@ -342,6 +368,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'jade',
+        'pygmentize',
         'useminPrepare',
         'concurrent:dist',
         'concat',
@@ -353,8 +380,10 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('default', [
-        'jshint',
+        //'jshint',
         'test',
         'build'
     ]);
 };
+
+// vim: et sw=4 ts=4
