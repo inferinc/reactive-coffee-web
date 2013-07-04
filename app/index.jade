@@ -1,118 +1,70 @@
-!!! 5
-html
-  head
-    meta(charset='utf-8')
-    meta(http-equiv='X-UA-Compatible', content='chrome=1')
-    meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1')
-    // build:css({.tmp,app}) styles/main.css
-    link(rel='stylesheet', type='text/css', href='styles/stylesheet.css', media='screen')
-    link(rel='stylesheet', type='text/css', href='styles/pygment_trac.css', media='screen')
-    link(rel='stylesheet', type='text/css', href='styles/print.css', media='print')
-    // endbuild
-    title reactive.coffee by yang
-  body
-    header
-      .inner
-        h1 reactive.coffee
-        h2
-          | A lightweight CoffeeScript library/DSL for reactive programming and for declaratively building dynamic web UIs
-        a.button(href='https://github.com/yang/reactive-coffee')
-          small View project on
-          | GitHub
-    #content-wrapper
-      .inner.clearfix
-        section#main-content
-          :markdown
-            ## Highlights
+extends layouts/base
+block title
+  | Reactive Coffee - A Lightweight CoffeeScript library/DSL for reactive
+  | programming and for declaratively building dynamic web UIs
+block content
+  :markdown
+    ## Highlights
 
-            - Library of reactive programming primitives
-            - Declarative DOM construction
-            - Simple, no magic, no new template syntax, all CoffeeScript
-            - Scalable in both performance and application architecture
-            - Tested with Chrome, Firefox, Safari, and IE10
-            - Available via [Bower] and [cdnjs]
-            - Works with jQuery
-            - MIT license
+    - Library of reactive programming primitives
+    - Declarative DOM construction
+    - Simple, no magic, no new template syntax, all CoffeeScript
+    - Scalable in both performance and application architecture
+    - Tested with Chrome, Firefox, Safari, and IE10
+    - Available via [Bower] and [cdnjs]
+    - Works with jQuery
+    - MIT license
 
-            [Bower]: http://bower.io/
-            [cdnjs]: http://cdnjs.com/
-            [fiddle]: http://jsfiddle.net/yang/SGvuy/
+    [Bower]: http://bower.io/
+    [cdnjs]: http://cdnjs.com/
+    [fiddle]: http://jsfiddle.net/yang/SGvuy/
 
-            ## Example: To-Do List
+    ## Example: To-Do List
 
-            [Play with example on jsFiddle][fiddle] or [see a complete TodoMVC example][TodoMVC]
+    [Play with example on jsFiddle][fiddle] or [see a complete TodoMVC example][TodoMVC]
 
-            ```coffeescript
-            class Task
-              constructor: (description, isDone) ->
-                @description = rx.cell(description)
-                @isDone = rx.cell(isDone)
+    ```coffeescript
+    class Task
+      constructor: (description, isDone) ->
+        @description = rx.cell(description)
+        @isDone = rx.cell(isDone)
 
-            tasks = rx.array([
-              new Task('Get milk', false)
-              new Task('Play with Reactive Coffee', false)
-              new Task('Walk the dog', false)
-            ])
+    tasks = rx.array([
+      new Task('Get milk', false)
+      new Task('Play with Reactive Coffee', false)
+      new Task('Walk the dog', false)
+    ])
 
-            $('body').append(
-              div {class: 'task-manager'}, [
-                h1 {}, ["Tasks for today"]
-                ul {class: 'tasks'}, tasks.map (task) ->
-                  li {class: 'task'}, [
-                    input {
-                      type: 'checkbox'
-                      checked: bind -> task.isDone.get()
-                      init: -> @change => task.isDone.set(@val())
-                    }
-                    span { style: bind -> "opacity: #{if task.isDone.get() then .5 else 1}" }, [
-                      task.description.get()
-                    ]
-                  ]
-                $newTask = input {type: 'text', placeholder: 'Enter new task'}
-              ]
-            )
+    $('body').append(
+      div {class: 'task-manager'}, [
+        h1 {}, ["Tasks for today"]
+        ul {class: 'tasks'}, tasks.map (task) ->
+          li {class: 'task'}, [
+            input {
+              type: 'checkbox'
+              checked: bind -> task.isDone.get()
+              init: -> @change => task.isDone.set(@val())
+            }
+            span { style: bind -> "opacity: #{if task.isDone.get() then .5 else 1}" }, [
+              task.description.get()
+            ]
+          ]
+        $newTask = input {type: 'text', placeholder: 'Enter new task'}
+      ]
+    )
 
-            $newTask.keydown (e) ->
-              if e.key == 13
-                tasks.push(new Task($(this).val(), false))
-                $(this).val('')
-            ```
+    $newTask.keydown (e) ->
+      if e.key == 13
+        tasks.push(new Task($(this).val(), false))
+        $(this).val('')
+    ```
 
-            ## Next steps
+    ## Next steps
 
-            See more [quickstart examples][quickstart], read through the [tutorial][tutorial], or learn more about the [motivation and design rationale][design].
+    See more [quickstart examples][quickstart], read through the [tutorial][tutorial], or learn more about the [motivation and design rationale][design].
 
-            [quickstart]: quickstart
-            [tutorial]: tutorial
-            [design]: design
+    [quickstart]: quickstart
+    [tutorial]: tutorial
+    [design]: design
 
-            [TodoMVC]: https://github.com/yang/reactive-coffee/blob/master/examples/todomvc/index.jade
-
-        aside#sidebar
-          a.button(href='https://github.com/yang/reactive-coffee/zipball/master')
-            small Download
-            | .zip file
-          a.button(href='https://github.com/yang/reactive-coffee/tarball/master')
-            small Download
-            | .tar.gz file
-          p.repo-owner
-            a(href='https://github.com/yang/reactive-coffee')
-            | is maintained by
-            a(href='https://github.com/yang') yang
-            | .
-          p
-            | This page was generated by
-            a(href='pages.github.com') GitHub Pages
-            | using the Architect theme by
-            a(href='https://twitter.com/jasonlong') Jason Long
-            | .
-    // if lt IE 9
-      script(src='//html5shiv.googlecode.com/svn/trunk/html5.js')
-    script(type='text/javascript')
-      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-    script(type='text/javascript')
-      try {
-      var pageTracker = _gat._getTracker("UA-41900480-1");
-      pageTracker._trackPageview();
-      } catch(err) {}
+    [TodoMVC]: https://github.com/yang/reactive-coffee/blob/master/examples/todomvc/index.jade
