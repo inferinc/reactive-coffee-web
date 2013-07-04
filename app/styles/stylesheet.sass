@@ -1,3 +1,5 @@
+@import "compass"
+
 @font-face
   font-family: 'Architects Daughter'
   font-style: normal
@@ -73,7 +75,7 @@ header
   padding-top: 40px
   padding-bottom: 0
   font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif
-  background: #ee8600 url(../images/header-bg.png) 0 0 repeat-x
+  background: $mid-orange url(../images/header-bg.png) 0 0 repeat-x
   border-bottom: solid 1px #275da1
   h1
     letter-spacing: -1px
@@ -125,7 +127,7 @@ aside#sidebar
 
 a.button
   width: 134px
-  height: 58px
+  height: 56px
   line-height: 1.2
   font-size: 23px
   color: #fff
@@ -146,7 +148,11 @@ aside a.button
   width: 138px
   padding-left: 64px
   display: block
-  background: transparent url(../images/download-button.png) 0 0 no-repeat
+  +border-radius(8px, 8px)
+  border: 2px solid #ddd
+  border-bottom: 2px solid #bbb
+  border-right: 2px solid #bbb
+  +background(linear-gradient(top, lighten($mid-orange, 3%), darken($mid-orange, 3%)), url(../images/download-button.png))
   margin-bottom: 20px
   font-size: 21px
 
@@ -412,8 +418,10 @@ footer
 
 nav
   padding: 15px 0 15px 0
-  background: rgba(0,0,0,.1)
-  text-align: center
+  .inner-inner
+    margin-right: -15px
+  +background(linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.2)))
+  text-align: right
   li
     list-style: none
     padding: 0
@@ -423,6 +431,6 @@ nav
     font-size: 18px
     padding: 15px 15px
     &:hover
-      background: rgba(0, 0, 0, .1)
+      +background(linear-gradient(rgba(0, 0, 0, .05), rgba(0, 0, 0, .1)))
     &:hover, &:active
       color: white
