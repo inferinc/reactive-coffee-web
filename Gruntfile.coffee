@@ -40,7 +40,7 @@ module.exports = (grunt) ->
     watch:
       jade:
         files: ["<%= yeoman.app %>/**/*.jade"]
-        tasks: ["jade", "pygmentize"]
+        tasks: ["jade", "pygmentize", "autolink"]
 
       coffee:
         files: ["<%= yeoman.app %>/scripts/{,*/}*.coffee"]
@@ -170,7 +170,15 @@ module.exports = (grunt) ->
           dest: ".tmp"
         ]
 
-    
+    autolink:
+      dist:
+        files: [
+          expand: true
+          cwd: ".tmp"
+          src: ["*.html"]
+          dest: ".tmp"
+        ]
+
     # not used since Uglify task does concat,
     # but still available if needed
     #concat: {
@@ -278,6 +286,7 @@ module.exports = (grunt) ->
       dist: ["coffee", "compass", "imagemin", "svgmin", "htmlmin"]
 
   pygmentize grunt
+  autolink grunt
 
   grunt.registerTask "server", (target) ->
     return grunt.task.run(["build", "open", "connect:dist:keepalive"])  if target is "dist"
@@ -285,6 +294,7 @@ module.exports = (grunt) ->
       "clean:server"
       "jade"
       "pygmentize"
+      "autolink"
       "concurrent:server"
       "connect:livereload"
       "open"
@@ -303,6 +313,7 @@ module.exports = (grunt) ->
     "clean:dist"
     "jade"
     "pygmentize"
+    "autolink"
     "useminPrepare"
     "concurrent:dist"
     "concat"

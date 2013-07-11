@@ -28,7 +28,8 @@
     "pygmentize-bundled": "~1.0.1",
     "ent": "0.0.5",
     "coffee-script": "~1.6.3",
-    "sync": "~0.2.2"
+    "sync": "~0.2.2",
+    "cheerio": "~0.12.0"
   },
   "engines": {
     "node": ">=0.8.0"

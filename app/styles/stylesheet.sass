@@ -60,7 +60,7 @@ body
   font-weight: 400
   color: #666
 
-a
+a:link
   color: #2879d0
   &:hover
     color: #2268b2
@@ -68,7 +68,7 @@ a
 $bright-orange: #f68700
 $mid-orange: #f08700
 
-a
+a:link, a:visited
   color: $mid-orange
   &:hover
     color: lighten($mid-orange, 20%)
@@ -90,7 +90,7 @@ header
     left: 0
   border-bottom: solid 1px #eee
   +box-shadow(rgba(0,0,0,.4) 0 0 20px)
-  a
+  a:link, a:visited
     color: white
     &:hover, &:active
       color: white
@@ -476,7 +476,7 @@ header h1.smaller-title
   li
     list-style: none
     margin: 0
-    margin-top: 4px
+    margin-top: 8px
     padding: 0
   a
     font-size: 18px
@@ -488,3 +488,9 @@ header h1.smaller-title
       display: inline-block
       width: 0
       left: -15px
+  ul li ul
+    margin-left: 16px
+    li
+      margin-top: 8px
+      a
+        font-size: 16px
