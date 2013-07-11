@@ -1,0 +1,103 @@
+extends layouts/documentation
+block title
+  | API Documentation - reactive.coffee
+block content
+  :markdown
+    API Documentation
+    =================
+
+    ## `rx` Namespace
+
+    This contains the core reactive programming primitives.  These are the core
+    data structures:
+
+    - `ObsCell`: observable cell base class
+        - `SrcCell`: a source cell, one that can be directly mutated
+        - `DepCell`: a dependent cell, one whose value is some function of another
+          observable cell
+    - `ObsArray`: observable array base class
+        - `SrcArray`: a source array, one that can be directly mutated
+        - `DepArray`: a dependent array, one whose value is some transformation of
+          another observable array
+    - `ObsMap`: observable object (map) base class
+        - `SrcMap`: a source object, one that can be directly mutated
+        - `DepMap`: a dependent object, one whose value is some transformation of
+          another observable object
+
+    **Free functions**
+
+    - `cell(value)`: return a `SrcCell` initialized to the given value (optional;
+      defaults to `undefined`)
+    - `array(value)`: return a `SrcArray` initialized to the given array (optional;
+      defaults to `[]`)
+    - `bind(fn)`: given a 0-ary function, return a `DepCell` whose value is the
+      bound to the result of evaluating that function.  The function is immediately
+      evaluated once, and each time it's evaluated, for any accesses of
+      observables, the `DepCell` subscribes to the corresponding events, which may
+      subsequently trigger future re-evaluations.
+    - `lagBind(init, fn)`: same as `bind` but waits a 500ms delay after getting an
+      update before the `DepCell` updates itself (yes, this needs to be a
+      configurable parameter)
+
+    **`ObsCell`**
+
+    - `get()`: return current value of the cell
+
+    **`SrcCell`**
+
+    - `set(x)`: set value of cell to `x`
+
+    **`ObsArray`**
+
+    - `at(i)`: return element at `i`
+    - `all()`: return raw array copy of all elements
+    - `length()`: return size of the array
+    - `map(fn)`: return `DepArray` of given function mapped over this array
+
+    **`SrcArray`**
+
+    - `splice(index, count, additions...)`: replace `count` elements starting at
+      `index` with `additions`
+    - `insert(x, i)`: insert value `x` at index `i`
+    - `remove(x)`: find and remove first occurrence of `x`
+    - `removeAt(i)`: remove element at index `i`
+    - `push(x)`: append `x` to the end of the array
+    - `put(i, x)`: replace element `i` with value `x`
+    - `replace(xs)`: replace entire array with raw array `xs`
+
+    **`ObsMap`**
+
+    - `get(k)`: return value associated with key `k`
+    - `all()`: return raw object copy
+
+    **`SrcMap`**
+
+    - `put(k, v)`: associate value `v` with key `k` and return any prior value associated with `k`
+    - `remove(k)`: remove the entry associated at key `k`
+
+    ## `rxt` Namespace
+
+    This contains the template DSL constructs.  Main thing here is the _tag
+    function_, which is what constructs a DOM element.
+
+    **Free functions**
+
+    - `mktag(tag)`: returns a tag function of the given tag name.  The other tags
+      are simply aliases to this, e.g.: `div = mktag('div')`.
+    - `importTags()`: populate the global namespace with the tag symbols, so you
+      don't need have `rxt` all over your templates.  Useful for quickly throwing
+      something together.
+    - `rawHtml(html)`: wrapper for strings that tags won't escape when rendering;
+      example: `div {}, [rawHtml('<span>hello</span>')]`
+    - Tags: `p`, `br`, `ul`, `li`, `span`, `anchor`, `div`, `input`, `select`,
+      `option`, `label`, `button`, `fieldset`, `legend`, `section`, `header`,
+      `footer`, `strong`, `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `h7`
+
+    **jQuery plug-in**
+
+    - `rx(property)`: lazily create (or take the cached instance) of a cell whose
+      value is maintained to reflect the desired property on the element.
+      `property` can be `'checked'`, `'focused'`, or `'val'`.  Returns not the cell
+      but the value from `get` on the cell.
+
+
