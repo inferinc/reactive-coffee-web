@@ -1,0 +1,113 @@
+extends layouts/normal
+block title
+  | Documentation
+block content
+  :markdown
+    Quickstart Examples
+    ===================
+
+    Here's a quick taste of what using Reactive is like.
+
+    A regular static DOM:
+
+    ```coffeescript
+    $('body').append(
+      div { class: 'main-content' }, [
+        h1 {}, [ 'Hello world!' ]
+        ul { class: 'nav' }, [
+          li {}, [ 'Home' ]
+          li {}, [ 'About' ]
+          li {}, [ 'Contact' ]
+        ]
+        input { type: 'text', placeholder: 'Your name here' }
+      ]
+    )
+    ```
+
+    A simple reactive example implementing a todo list (you can also find a more
+    complete TodoMVC example in `examples/`):
+
+    ```coffeescript
+    class Task
+      constructor: (description, isDone) ->
+        @description = rx.cell(description)
+        @isDone = rx.cell(isDone)
+
+    tasks = rx.array([
+      new Task('Get milk', false)
+      new Task('Play with Reactive Coffee', false)
+      new Task('Walk the dog', false)
+    ])
+
+    $('body').append(
+      div {class: 'task-manager'}, [
+        h1 {}, ["Tasks for today"]
+        ul {class: 'tasks'}, tasks.map (task) ->
+          li {class: 'task'}, [
+            input {
+              type: 'checkbox'
+              checked: bind -> task.isDone.get()
+              init: -> @change => task.isDone.set(@val())
+            }
+            task.description.get()
+          ]
+        $newTask = input {type: 'text', placeholder: 'Enter new task'}
+      ]
+    )
+
+    $newTask.keydown (e) ->
+      if e.key == 13
+        tasks.push(new Task($(this).val(), false))
+        $(this).val('')
+    ```
+
+    Recursively render a tree structure, something that's a bit more complex to
+    incrementally maintain otherwise:
+
+    ```coffeescript
+    class TreeNode
+      constructor: (value, children) ->
+        @value = rx.cell(value)
+        # Arrays only insert/remove the minimum set into/from the DOM (via the `map` method)
+        @children = rx.array(children)
+
+    root = new TreeNode('root', [
+      new TreeNode('alpha', [])
+      new TreeNode('beta', [
+        new TreeNode('gamma', [])
+        new TreeNode('delta', [])
+      ])
+    ])
+
+    # Nested `bind`/`map` calls are insulated from parents, re-rendering only
+    # what's necessary.
+    recurse = (node) ->
+      li {}, [
+        span {}, bind -> [ node.value.get() ]
+        ul {}, node.children.map -> recurse
+      ]
+
+    $('body').append( ul {}, [ recurse(root) ] )
+    ```
+
+    You can also have elements depend certain attributes of each other.  Here is a
+    text box that searches/filters the given list.
+
+    ```coffeescript
+    countries = [...]
+    $searchBox = input {
+      type: 'text'
+      placeholder: 'Type a country name'
+    }
+    ul {}, bind ->
+      for country in countries
+        if _(country).startsWith($searchBox.rx('text'))
+          li {}, [country]
+    ```
+
+    Currently there is a complete [TodoMVC] example in the `examples/` directory
+    (see the [source]) and on [jsFiddle][fiddle].  More examples will be added!
+
+    [TodoMVC]: http://todomvc.com/
+    [source]: https://github.com/yang/reactive-coffee/blob/master/examples/todomvc/index.jade
+
