@@ -13,21 +13,7 @@ html
       block title
   body
     header
-      .overlay
-      .inner
-        h1: a(href='/') reactive.coffee
-        h2
-          | A lightweight CoffeeScript library/DSL for reactive programming and for declaratively building dynamic web UIs
-        a.button(href='https://github.com/yang/reactive-coffee')
-          small View project on
-          | GitHub
-      nav
-        .inner
-          .inner-inner
-            a(href='a') Documentation
-            a(href='a') Community/Support
-            a(href='a') Rationale
-            a(href='a') Development
+      block header
     #content-wrapper
       .inner.clearfix
         section#main-content
