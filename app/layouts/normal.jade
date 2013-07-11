@@ -12,9 +12,6 @@ block header
 block body
   nav.side-nav
     ul
-      li: a.current(href='quickstart') Quickstart Examples
-      li: a(href='tutorial') Tutorial
-      li: a(href='api') API Documentation
-      li: a(href='changes') Change Log
+      block subnav
   section#main-content
     block content
