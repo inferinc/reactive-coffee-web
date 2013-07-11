@@ -1,0 +1,492 @@
+extends layouts/normal
+block title
+  | Documentation
+block content
+  :markdown
+    Tutorial
+    ========
+
+    ## Getting Started
+
+    Reactive depends on jQuery and Underscore.
+
+    ```html
+    <script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js'></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js'></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/coffeescript/0.0.0/coffeescript.min.js'></script>
+    ```
+
+    To start using the tags directly without having to prefix them with the `rxt`
+    namespace, use:
+
+    ```coffeescript
+    rxt.importTags()
+    ```
+
+    If you're using `bower`, these should be transitively pulled in, but `bower`
+    has issues solving dependency version constraints.
+
+    ## Cells
+
+    The core building block is an _observable cell_, `ObsCell`.
+
+    ```coffeescript
+    x = rx.cell()
+    ```
+
+    A cell is just a container for a value (initialized to `undefined` above, but
+    you could also have passed in an initial value).  You can `get`/`set` this
+    value:
+
+    ```coffeescript
+    x.set(3)
+    x.get() # 3
+    ```
+
+    ## Events
+
+    The special thing about observables is that you can _subscribe_ to events on
+    them, where events are fired when the value of the cell changes in some way.
+    For simple cells like the above, there's just a single _on-set_ event type:
+
+    ```coffeescript
+    subscription = x.onSet.sub ([oldVal, newVal]) ->
+      console.log "x was set from #{oldVal} to #{newVal}"
+    ```
+
+    The listener is just a simple callback.  All event types take callbacks of a
+    single argument—the type of that argument is event-specific, and in the case of
+    `onSet` it's a pair of `[old value, new value]`.  The `sub` method returns a
+    unique identifier for this subscription, which can later be used to unsubscribe
+    a listener:
+
+    ```coffeescript
+    x.onSet.unsub(subscription)
+    ```
+
+    You can now start reacting to these events.  For instance:
+
+    ```coffeescript
+    firstName = rx.cell('John')
+    # This ensures .name will always reflect the firstName
+    firstName.sub ([oldVal, newVal]) ->
+      $('.name').text(newVal)
+    firstName.set('Jane')
+    ```
+
+    ## Dependent Cells
+
+    The above is a simple way of updating but it's a bit verbose.  In most UI
+    frameworks, you have fewer models but many more visual representations of the
+    model.
+
+    To extend the above example, let's say you now had a displayed name that
+    depended on two cells (comprising your "model").  You could just create
+    explicit subscriptions and listeners:
+
+    ```coffeescript
+    firstName = rx.cell('John')
+    lastName = rx.cell('Smith')
+
+    updateName = ->
+      $('.name').text("#{firstName.get()} #{lastName.get()}")
+    firstName.sub -> updateName
+    lastName.sub -> updateName
+
+    firstName.set('Jane')
+    lastName.set('Doe')
+    ```
+
+    However, the primary way in which these cells are to be composed is via `bind`,
+    which lets you simply write an expression or function in terms of the dependent
+    nodes:
+
+    ```coffeescript
+    fullName = bind -> "#{firstName.get()} #{lastName.get()}"
+    ```
+
+    Now, `fullName` is always bound to the `firstName + lastName`.  Key here is
+    that no explicit subscription management is necessary.  This scales well to
+    more complex dependencies, and is more readable/declarative:
+
+    ```coffeescript
+    displayName = bind ->
+      if showRealName.get()
+        "Full name: #{fullName.get()}"
+      else
+        "Fake naem: #{fakeName.get()}"
+    ```
+
+    The bindings are managed such that only the dependent cells that could possibly
+    affect the result are effective dependencies.  In this example, at any moment,
+    `fullName` depends either only on `showRealName` and `fulName` *or* only on
+    `showRealName` and `fakeName`.  If `showRealName` is false, changes to
+    `firstName` and `lastName` will not trigger a re-render of the `.name`.
+
+    `firstName` and `lastName` are _source cells_ that support setting of values.
+    `fullName` is itself also a cell, but a "read-only" _dependent cell_ that we
+    can bind to some expression of source cells.  These do not have a `set` method.
+
+    Dependent cells can in turn be bound to as well:
+
+    ```coffeescript
+    greeting = bind -> "Welcome back #{fullName.get()}!"
+    ```
+
+    These bindings can form an arbitrary DAG.
+
+    Reactive programming is the same concept behind how spreadsheet calculations
+    work, and is similar to the data-binding feature present in many of the other
+    frameworks—which is an effective paradigm for frontend UI development—but
+    instead of being exclusively applied to view components, typically confined to
+    a template language, this is generalized to be a generic way of expressing
+    arbitrary time-varying data structures.
+
+    ## Arrays and Maps
+
+    Cells are the most general type of observable container.  However, there are
+    also observable containers with special support for arrays and objects.  This
+    special support is to support more efficient and fine-grained event types
+    reflecting changes to particular sub-parts rather than an all-encompassing
+    `onSet` event.  For instance, arrays commonly have elements inserted or removed
+    from them, in which case we'd like to avoid re-rendering entire dependent
+    sections of the DOM or otherwise needing to figure out what parts have changed.
+
+    Arrays support a `onChange` is a particularly special type of event.  It fires
+    with a triple `[index, removed, added]`, where `index` is the offset into the
+    array where the change is happening, `removed` is the sub-array of elements
+    removed, and `added` is the sub-array of elements inserted.  Example:
+
+    ```coffeescript
+    xs = rx.array([1,2,3])
+    xs.onChange.sub ([index, removed, added]) ->
+      console.log "replaced #{removed.length} element(s) at offset #{index} with #{removed.length} new element(s)"
+    xs.push(4)
+    # replaced 0 element(s) at offset 3 with 1 new element(s)
+    ```
+
+    ## Static Templates
+
+    Now for a brief jump to something entirely different....
+
+    The "template" system is implemented as an embedded domain-specific language
+    (DSL) in CoffeeScript, which happens to have a syntax that [lends itself
+    well][DSLs] to expressing the template structure.
+
+    [DSLs]: https://github.com/jashkenas/coffee-script/wiki/%5Bextensibility%5D-writing-DSLs
+
+    Here's a simple template:
+
+    ```coffeescript
+    div {class: 'sidebar'}, [
+      h2 {}, ['Send a message']
+      form {action: '/msg', method: 'POST'}, [
+        input {type: 'text', name: 'comment', placeholder: 'Your message'}
+        select {name: 'recipient'}, [
+          option {value: '0'}, ['John']
+          option {value: '1'}, ['Jane']
+        ]
+        button {class: 'submit-btn'}, ['Send']
+      ]
+    ]
+    ```
+
+    It translates to the following HTML:
+
+    ```coffeescript
+    <div class="sidebar">
+      <h2>Send a message</h2>
+      <form action='/msg' method='POST'>
+        <input type='text' name='comment' placeholder='Your message'/>
+        <select name='recipient'>
+          <option value='0'>John</option>
+          <option value='1'>Jane</option>
+        </select>
+        <button class='submit-btn'>Send</button>
+      </form>
+    </div>
+    ```
+
+    Since this is CoffeeScript, you can embed arbitrary logic:
+
+    ```coffeescript
+    # Loops:
+
+    ul {class: 'friends'},
+      for name in names
+        li {class: 'friend'}, [name]
+
+    # Or equivalently:
+
+    ul {class: 'friends'}, names.map(name) ->
+      li {class: 'friend'}, [name]
+
+    # Conditionals:
+
+    div {class: 'profile'}, [
+      img {src: "#{user.picUrl}"}
+      if signedIn
+        button {}, ["Add #{user.name}" as a friend."]
+      else
+        p {}, ["Sign up to connect with #{user.name}!"]
+    ]
+    ```
+
+    Tags are really just functions that return DOM elements (wrapped in jQuery
+    objects), so you are free to attach behaviors to them:
+
+    ```coffeescript
+    $button = button {class: 'submit-btn'}, ['Click Me!']
+    $button.click -> $(this).text('I been clicked.')
+    ```
+
+    However, since often times you may be working with deeply nested templates
+    structures where it's clumsy to tack on behaviors afterward, you can for
+    convenience supply a function in an attribute named `init`, which is
+    immediately invoked with the current element bound to `this`:
+
+    ```coffeescript
+    table {}, properties.map (prop) ->
+      tr {}, [
+        td {}, [prop.name]
+        td {}, [
+          input {
+            type: 'text'
+            value: prop.value
+            placeholder: 'Enter property value'
+            init: -> @blur => setProperty(prop, @val())
+          }
+        ]
+      ]
+    ```
+
+    Since CoffeeScript assignments are expressions, we also have a convenient way
+    of naming elements:
+
+    ```coffeescript
+    table {}, properties.map (prop) ->
+      $row = tr {}, [
+        td {}, [prop.name]
+        td {}, [
+          input {
+            type: 'text'
+            value: prop.value
+            placeholder: 'Enter property value'
+            init: -> @blur =>
+              $row.css('opacity', .5)
+              setProperty(prop, @val())
+          }
+        ]
+      ]
+    ```
+
+    ## Reactive Templates
+
+    Reactive templates tie together the UI-building style from the previous section
+    with the reactive programming primitives from earlier.
+
+    You could just write explicit imperative code to transform the DOM in a way
+    that consistently reflects the bindings you're interested in.  For instance:
+
+    ```coffeescript
+    $('body').append(input {
+      class: 'name passive'
+      type: 'text'
+      placeholder: 'Name'
+      value: ''
+    })
+    displayName.onSet.sub ([oldVal, newVal]) ->
+      $('.name').val(newVal)
+    isActive.onSet.sub ([oldVal, newVal]) ->
+      if newVal
+        $('.name').removeClass('passive').addClass('active')
+      else
+        $('.name').removeClass('active').addClass('passive')
+    ```
+
+    However, more complex transformations can become more involved.
+
+    ```coffeescript
+    names = rx.array(['1','2','3','4','5'])
+    $('body').append($nameList = div {class: 'name-list'})
+    spans = names.map (name) -> span {}, [name]
+    spans.onChange.sub ([index, added, removed]) ->
+      # Homework: fill in logic heer for efficiently inserting/removing DOM
+      # nodes!
+    ```
+
+    You also shouldn't have to repeatedly code this logic any time you want to make
+    bindings, and it would be much more clear to specify the template
+    declaratively:
+
+    ```coffeescript
+    $('body').append(
+      input {
+        class: bind -> "name #{if isActive.get() then 'active' else 'passive'}"
+        type: 'text'
+        placeholder: 'Name'
+        value: bind -> displayName.get()
+      }
+    )
+
+    $('body').append(
+      div {class: 'name-list'}, names.map (name) ->
+        span {}, [name]
+    )
+    ```
+
+    You're declaring what the UI should *always look like over time*, and the
+    system frees you from the responsibility of maintaining this.
+
+    Here's another quick example, this one of a todo list.  Notice how here we are
+    using a raw array in a cell, rather than an `rx.array`.  This is fine but not
+    as efficient in the face of large arrays.
+
+    ```coffeescript
+    tasks = rx.cell(['Get milk', 'Take out trash', 'Clean up room'])
+    $('body').append(
+      ul {class: 'tasks'}, bind ->
+        for task in tasks.get()
+          li {class: 'task'}, ["User: #{task}"]
+    )
+    ```
+
+    Any attribute can be a cell:
+
+    ```coffeescript
+    input { value: bind -> displayName.get() }
+    ```
+
+    the contents can be a cell that returns an array (of strings or elements):
+
+    ```coffeescript
+    span {}, bind -> [displayName.get()]
+    div {}, bind -> names.all()
+    ```
+
+    or an observable array:
+
+    ```coffeescript
+    div {}, names
+    # results in: <div>01234</div>
+
+    div {}, names.map (name) ->
+      span {}, [name]
+    # results in: <div><span>0</span><span>1</span>...</div>
+    ```
+
+    You have very fine-grained control over the re-rendering process.  For
+    instance, say we had a model like the following:
+
+    ```coffeescript
+    class User
+      constructor: (id, name) ->
+        @id = rx.cell(id)
+        @name = rx.cell(name)
+
+    class App
+      constructor: (users) ->
+        @users = rx.array(users)
+
+    app = new App([
+      new User('John', 0)
+      new User('Jane', 1)
+    ])
+    ```
+
+    If we wanted to just re-render individual elements, we could do that with:
+
+    ```coffeescript
+    select {}, app.users.map (user) ->
+      option {value: bind -> "#{user.id.get()}"}, bind -> "#{user.name.get()}"
+    ```
+
+    On the other hand, if we wanted to re-render the entire section whenever
+    anything changed, we could do so with:
+
+    ```coffeescript
+    select {}, bind -> app.users.all().map (user) ->
+      option {value: "#{user.id.get()}"}, "#{user.name.get()}"
+    ```
+
+    Nested `bind`/`map` calls are insulated from outer calls, re-rendering only
+    what's necessary.
+
+    ## Components
+
+    Making reusable components is as simple as defining a function:
+
+    ```coffeescript
+    tabs = (opts) ->
+      opts = _(opts).defaults
+        tabs: []
+        initialTabIndex: 0
+        activeClass: 'active-tab'
+
+      activeTabIndex = rx.cell(opts.initialTabIndex)
+
+      div {class: 'tabs'}, [
+        ul {class: 'nav-tabs'}, opts.tabs.map ([tabName, tabContents], i) ->
+          li {
+            class: bind ->
+              [
+                "nav-tab"
+                "#{if activeTabIndex.get() == i then opts.activeClass else ''}"
+              ].join(' ')
+            init: -> @click => activeTabIndex.set(i)
+          }, [tabName]
+        div {class: 'tab-content'}, bind ->
+          [tabName, tabContents] = opts.tabs.at(activeTabIndex.get())
+          tabContents
+      ]
+    ```
+
+    Now we can use this with:
+
+    ```coffeescript
+    tabs {
+      activeClass: 'my-active-tab'
+      tabs: rx.array([
+        ['Properties', modifyTab()]
+        ['Create', createTab()]
+        ['Styles', stylesTab()]
+      ])
+    }
+    ```
+
+    When defining abstractions, it's almost always better to err on the side of
+    making everything dynamic, since you can always opt-out of dynamism by stopping
+    propagation, whereas you cannot later reintroduce dynamism into places with no
+    dynamic bindings.
+
+    ## Binding To DOM Element Attributes
+
+    We can treat certain interactive DOM elements' attributes as cells, thus
+    binding to them as well.
+
+    Consider a type-ahead search component, where the completion list only displays
+    items that prefix-match the given query.  Furthermore, we want the completion
+    list to only show up if it's enabled by the checkbox and when we actually have
+    focused on the input text field:
+
+    ```coffeescript
+    docs = [...]
+    div {class: 'search'}, [
+      $query = input {type: 'text', placeholder: 'Enter query'}
+      $showResults = input {type: 'checkbox', id: 'show-results'}
+      label {for: 'show-results'}, ['Show type-ahead results']
+      div {class: 'results'}, bind ->
+        if $query.rx('focused') and $showResults.rx('checked')
+          for doc in docs when _(doc.title).startsWith($query.rx('val'))
+            a {href: doc.url}, [doc.title]
+        else
+          []
+      ]
+    ]
+    ```
+
+    We are using three different types of reactive element attributes.
+    `rx(property)` treats the value of the given property (focused, checked, val)
+    as a cell and returns `get` on that cell; the `bind` is reactive to any of
+    them.
+
