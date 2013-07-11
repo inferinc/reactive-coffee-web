@@ -11,76 +11,94 @@ block header
     a.button(href='https://github.com/yang/reactive-coffee')
       small View project on
       | GitHub
-  nav
+  nav.top-nav
     .inner
       .inner-inner
         a(href='a') Documentation
         a(href='a') Community/Support
         a(href='a') Rationale
         a(href='a') Development
-block content
-  :markdown
-    ## Highlights
+block body
+  section#main-content
+    :markdown
+      ## Highlights
 
-    - Library of reactive programming primitives
-    - Declarative DOM construction
-    - Simple, no magic, no new template syntax, all CoffeeScript
-    - Scalable in both performance and application architecture
-    - Tested with Chrome, Firefox, Safari, and IE10
-    - Available via [Bower] and [cdnjs]
-    - Works with jQuery
-    - MIT license
+      - Library of reactive programming primitives
+      - Declarative DOM construction
+      - Simple, no magic, no new template syntax, all CoffeeScript
+      - Scalable in both performance and application architecture
+      - Tested with Chrome, Firefox, Safari, and IE10
+      - Available via [Bower] and [cdnjs]
+      - Works with jQuery
+      - MIT license
 
-    [Bower]: http://bower.io/
-    [cdnjs]: http://cdnjs.com/
-    [fiddle]: http://jsfiddle.net/yang/SGvuy/
+      [Bower]: http://bower.io/
+      [cdnjs]: http://cdnjs.com/
+      [fiddle]: http://jsfiddle.net/yang/SGvuy/
 
-    ## Example: To-Do List
+      ## Example: To-Do List
 
-    [Play with example on jsFiddle][fiddle] or [see a complete TodoMVC example][TodoMVC]
+      [Play with example on jsFiddle][fiddle] or [see a complete TodoMVC example][TodoMVC]
 
-    ```coffeescript
-    class Task
-      constructor: (description, isDone) ->
-        @description = rx.cell(description)
-        @isDone = rx.cell(isDone)
+      ```coffeescript
+      class Task
+        constructor: (description, isDone) ->
+          @description = rx.cell(description)
+          @isDone = rx.cell(isDone)
 
-    tasks = rx.array([
-      new Task('Get milk', false)
-      new Task('Play with Reactive Coffee', false)
-      new Task('Walk the dog', false)
-    ])
+      tasks = rx.array([
+        new Task('Get milk', false)
+        new Task('Play with Reactive Coffee', false)
+        new Task('Walk the dog', false)
+      ])
 
-    $('body').append(
-      div {class: 'task-manager'}, [
-        h1 {}, ["Tasks for today"]
-        ul {class: 'tasks'}, tasks.map (task) ->
-          li {class: 'task'}, [
-            input {
-              type: 'checkbox'
-              checked: bind -> task.isDone.get()
-              init: -> @change => task.isDone.set(@val())
-            }
-            span { style: bind -> "opacity: #{if task.isDone.get() then .5 else 1}" }, [
-              task.description.get()
+      $('body').append(
+        div {class: 'task-manager'}, [
+          h1 {}, ["Tasks for today"]
+          ul {class: 'tasks'}, tasks.map (task) ->
+            li {class: 'task'}, [
+              input {
+                type: 'checkbox'
+                checked: bind -> task.isDone.get()
+                init: -> @change => task.isDone.set(@val())
+              }
+              span { style: bind -> "opacity: #{if task.isDone.get() then .5 else 1}" }, [
+                task.description.get()
+              ]
             ]
-          ]
-        $newTask = input {type: 'text', placeholder: 'Enter new task'}
-      ]
-    )
+          $newTask = input {type: 'text', placeholder: 'Enter new task'}
+        ]
+      )
 
-    $newTask.keydown (e) ->
-      if e.key == 13
-        tasks.push(new Task($(this).val(), false))
-        $(this).val('')
-    ```
+      $newTask.keydown (e) ->
+        if e.key == 13
+          tasks.push(new Task($(this).val(), false))
+          $(this).val('')
+      ```
 
-    ## Next steps
+      ## Next steps
 
-    See more [quickstart examples][quickstart], read through the [tutorial][tutorial], or learn more about the [motivation and design rationale][design].
+      See more [quickstart examples][quickstart], read through the [tutorial][tutorial], or learn more about the [motivation and design rationale][design].
 
-    [quickstart]: quickstart
-    [tutorial]: tutorial
-    [design]: design
+      [quickstart]: quickstart
+      [tutorial]: tutorial
+      [design]: design
 
-    [TodoMVC]: https://github.com/yang/reactive-coffee/blob/master/examples/todomvc/index.jade
+      [TodoMVC]: https://github.com/yang/reactive-coffee/blob/master/examples/todomvc/index.jade
+
+  aside#sidebar
+    a.button(href='https://github.com/yang/reactive-coffee/zipball/master')
+      small Download
+      |  .zip file
+    a.button(href='https://github.com/yang/reactive-coffee/tarball/master')
+      small Download
+      |  .tar.gz file
+    p.repo-owner
+      a(href='https://github.com/yang/reactive-coffee') reactive.coffee
+      |  is maintained by 
+      a(href='https://github.com/yang') yang
+      | .
+    p
+      | Based on Architect theme by 
+      a(href='https://twitter.com/jasonlong') Jason Long
+      | .

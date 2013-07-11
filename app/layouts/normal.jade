@@ -3,9 +3,18 @@ block header
   .overlay
   .inner
     h1.smaller-title: a(href='/') reactive.coffee
-    nav
+    nav.top-nav
       .inner-inner
         a(href='a') Documentation
         a(href='a') Community/Support
         a(href='a') Rationale
         a(href='a') Development
+block body
+  nav.side-nav
+    ul
+      li: a.current(href='quickstart') Quickstart Examples
+      li: a(href='tutorial') Tutorial
+      li: a(href='api') API Documentation
+      li: a(href='changes') Change Log
+  section#main-content
+    block content
