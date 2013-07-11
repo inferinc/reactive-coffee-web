@@ -1,0 +1,81 @@
+extends layouts/development
+block title
+  | Ideas - reactive.coffee
+block content
+  :markdown
+    Ideas
+    =====
+
+    ## Dirty-Tracking Re-Rendering Analysis
+
+    The fine-grained control over re-rendering and bindings is powerful, but for
+    bindings that are non-performance-critical or don't need to scale, it's less
+    effort to not have to selectively decide where those bindings exist.  Simply
+    make everything dynamically bound, and then with events being used only to
+    determine what parts of the model have been dirtied, we can instead let the
+    framework compute optimal set(s) of the DOM to re-render automatically.
+
+    Once everything is a binding, slightly modified/more scalable syntax and idioms
+    may be warranted, so that instead of:
+
+    ```coffeescript
+    ul {class: (bind -> "biglist"), style: (bind -> "display: #{shown}")}, xs.map (x) ->
+      li {}, bind -> ["#{x.name}"]
+    ```
+
+    we write:
+
+    ```coffeescript
+    ul {
+      class: -> "biglist"
+      style: -> "display: #{shown}"
+      contents: xs.map (x) ->
+        li { contents: -> ["#{x.name}"] }
+    }
+    ```
+
+    ## Object.observe
+
+    A platform feature looming on the horizon of ECMAScript is that of
+    [`Object.observe`], which allows for reacting to mutation events on objects
+    without needing explicit syntax for it, e.g.:
+
+    [`Object.observe`]: http://updates.html5rocks.com/2012/11/Respond-to-change-with-Object-observe
+
+    ```coffeescript
+    x = 0
+    foo.x = 3
+    ```
+
+    vs.
+
+    ```coffeescript
+    x = rx.cell(0)
+    x.set(3)
+    ```
+
+    The main benefit here is that you needn't sprinkle `rx.cell` annotations
+    everywhere and you can re-use existing code that mutates objects normally
+    without going through `.set`.  This similarly means that bindings do not need
+    to explicitly call `.get`, and instead can assume a `.get` on any variable
+    access.
+
+    [Angular] and other frameworks support free-form models, but must do additional
+    work to re-compute what has actually changed.  The [Polymer] framework
+    pioneered support for `Object.observe`, but as of this writing it's not a
+    widely supported feature (only available in Chrome Canary) and the framework
+    has a more expensive fallback.
+
+    ## DOM-Diff Re-Rendering Analysis
+
+    Throw away all observables and bindings, and re-build the entire view on every
+    change to the model via an API that mirrors `rxt` except for returning
+    lightweight DOM representations.  By computing the diff between
+    representations, the actual DOM operations can be computed.
+
+    ## Network Data Bindings
+
+    This is flexible, but it would be convenient to have some implementations of
+    Comet- or WebSocket-based push mechanisms that works well with various
+    server-side frameworks.
+
