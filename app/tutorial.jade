@@ -16,15 +16,25 @@ block content
     <script src='//cdnjs.cloudflare.com/ajax/libs/coffeescript/0.0.0/coffeescript.min.js'></script>
     ```
 
+    If you're using `bower`, you can also add Reactive as a dependency for your
+    project:
+
+    ```
+    bower install --save reactive-coffee
+    ```
+
+    This will transitively pull in the above dependencies for
+    Reactive (temp. note: bower [has issues solving dependency version
+    constraints][bower bug]).
+
+    [bower bug]: https://github.com/bower/bower/issues/540
+
     To start using the tags directly without having to prefix them with the `rxt`
     namespace, use:
 
     ```coffeescript
     rxt.importTags()
     ```
-
-    If you're using `bower`, these should be transitively pulled in, but `bower`
-    has issues solving dependency version constraints.
 
     ## Cells
 
