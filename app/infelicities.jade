@@ -1,33 +1,82 @@
-extends layouts/documentation
+extends layouts/development
 block title
-  | Development Setup - reactive.coffee
+  | Infelicities - reactive.coffee
 block content
   :markdown
-    Development Setup
-    =================
+    Infelicities
+    ============
 
-    To fetch node dependencies:
+    There are a number of areas for immediate improvement, including but not
+    limited to the following:
 
-        npm install # pull dependencies into ./node_modules
-        npm install -g phantomjs # temp workaround for karma phantomjs launcher
-        npm install -g grunt-cli # for conveniently running grunt
-        npm install -g bower # for conveniently running grunt
+    ## Lazy change propagation
 
-    To fetch dependencies:
+    This one is rather low-hanging fruit: when a cell's value has been set to the
+    same value, we should not propagate events downstream to dependent nodes.
 
-        bower install
+    ## Structural Attribute Bindings
 
-    To build and test:
+    Currently, attributes are strings.  For most attributes this is fine, but for
+    certain attributes such as `style`, we could have a simple convenience
+    preprocessor that takes in an object map of the style names and renders the
+    string.  This could be extended to lists for `class` and so on.
 
-        grunt
+    ## Topologically Ordered Visits
 
-    To test:
+    If we consider the DAG of dependencies among observable nodes, when there's an
+    event being propagated through the system, the notifications currently visit
+    nodes in depth-first order.  However, the most efficient order in which to
+    propagate changes is by processing the events of the nodes in topologically
+    sorted order.  For instance, consider the following DAG:
 
-        grunt test
+        A -> B
+        A -> C
+        B -> D
+        C -> D
+        D -> E
 
-    Tests may spew this error after running:
+    ![DAG](https://chart.googleapis.com/chart?chl=digraph+%22classes_No_Name%22+%7B%0D%0AA+-%3E+B%3B%0D%0AA+-%3E+C%3B%0D%0AB+-%3E+D%3B%0D%0AC+-%3E+D%3B%0D%0AD+-%3E+E%3B%0D%0A%7D%0D%0A&cht=gv)
 
-        ERROR [launcher]: Cannot start PhantomJS
+    If `A` is updated, then we'd currently perform a recursive descent starting at
+    `A` and visit the nodes in this order:
 
-    You can ignore this; it was a Karma bug, fixed recently in
-    <https://github.com/karma-runner/karma/issues/444>.
+        A, B, D, E, C, D, E
+
+    However, if we kept track of the DAG, then we could process the nodes in
+    topologically sorted order:
+
+        A, B, C, D, E
+
+    This guarantees avoiding multiple visits to the same node.
+
+    ## Lazy Event Notification
+
+    More flexible-but-still-efficient array (and other data structure) mutations.
+    Currently arrays have built-in mechanisms for efficient propagation of events
+    such as insertion, removal, splicing, etc.  However, for more involved
+    transformations, or if we want to reuse existing array transformation code, we
+    can still do better than re-evaluating all dependents downstream by figuring
+    out what has changed, and then propagating the diff's or operations (such as
+    reorderings) for more efficient downstream handling.
+
+    This can be extended to arbitrary object types/data structures beyond arrays
+    and should be configurable, with the ability to substitute in various change
+    detection or diffing algorithms.
+
+    ## Text Spans
+
+    Text chunks are wrapped in span tags.  There's no fundamental reason this is
+    necessary beyond convenience/speed of implementing the early versions of this
+    framework.
+
+    ## Transitions
+
+    Ability to apply animations and effects to things like entrances, exits, and
+    reorderings.  See the [d3 transitions API] for something I'm keen on borrowing
+    from.
+
+    [d3 transitions API]: https://github.com/mbostock/d3/wiki/Transitions
+
+    ## Tests
+
+    And examples.  Need more tests and examples.  'Nuff said.
