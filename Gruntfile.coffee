@@ -2,6 +2,7 @@
 "use strict"
 require "coffee-script"
 pygmentize = require("./pygmentize")
+autolink = require("./autolink")
 LIVERELOAD_PORT = 35729
 lrSnippet = require("connect-livereload")(port: LIVERELOAD_PORT)
 mountFolder = (connect, dir) ->
@@ -277,16 +278,39 @@ module.exports = (grunt) ->
       dist: ["coffee", "compass", "imagemin", "svgmin", "htmlmin"]
 
   pygmentize grunt
+
   grunt.registerTask "server", (target) ->
     return grunt.task.run(["build", "open", "connect:dist:keepalive"])  if target is "dist"
-    grunt.task.run ["clean:server", "jade", "pygmentize", "concurrent:server", "connect:livereload", "open", "watch"]
+    grunt.task.run [
+      "clean:server"
+      "jade"
+      "pygmentize"
+      "concurrent:server"
+      "connect:livereload"
+      "open"
+      "watch"
+    ]
 
-  grunt.registerTask "test", ["clean:server", "concurrent:test", "connect:test", "mocha"]
+  grunt.registerTask "test", [
+    "clean:server"
+    "concurrent:test"
+    "connect:test"
+    "mocha"
+  ]
   
   #'uglify',
-  grunt.registerTask "build", ["clean:dist", "jade", "pygmentize", "useminPrepare", "concurrent:dist", "concat", "cssmin", "copy:dist", "rev", "usemin"]
+  grunt.registerTask "build", [
+    "clean:dist"
+    "jade"
+    "pygmentize"
+    "useminPrepare"
+    "concurrent:dist"
+    "concat"
+    "cssmin"
+    "copy:dist"
+    "rev"
+    "usemin"
+  ]
   
   #'jshint',
   grunt.registerTask "default", ["test", "build"]
-
-# vim: et sw=4 ts=4
