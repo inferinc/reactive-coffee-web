@@ -278,6 +278,11 @@ module.exports = (grunt) ->
           cwd: ".tmp/images"
           dest: "<%= yeoman.dist %>/images"
           src: ["generated/*"]
+        ,
+          expand: true
+          cwd: '.tmp'
+          dest: '<%= yeoman.dist %>'
+          src: ['sitemap.xml']
         ]
 
     concurrent:
