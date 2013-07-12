@@ -285,8 +285,16 @@ module.exports = (grunt) ->
       test: ["coffee"]
       dist: ["coffee", "compass", "imagemin", "svgmin", "htmlmin"]
 
+    sitemap:
+      dist:
+        siteRoot: '.tmp/'
+        homepage: 'http://yang.github.io/reactive-coffee/'
+
   pygmentize grunt
   autolink grunt
+
+  # Work around grunt-sitemap 0.1.0 (fixed in master)
+  grunt.utils = grunt.util
 
   grunt.registerTask "server", (target) ->
     return grunt.task.run(["build", "open", "connect:dist:keepalive"])  if target is "dist"
@@ -296,6 +304,7 @@ module.exports = (grunt) ->
       "pygmentize"
       "autolink"
       "concurrent:server"
+      "sitemap"
       "connect:livereload"
       "open"
       "watch"
@@ -316,6 +325,7 @@ module.exports = (grunt) ->
     "autolink"
     "useminPrepare"
     "concurrent:dist"
+    "sitemap"
     "concat"
     "cssmin"
     "copy:dist"
