@@ -335,3 +335,5 @@ module.exports = (grunt) ->
   
   #'jshint',
   grunt.registerTask "default", ["test", "build"]
+
+# vim: et sw=2 ts=2
