@@ -45,6 +45,14 @@ module.exports = (grunt) ->
                     grunt.file.glob.sync(path.join(path.dirname(filepath), href))
                 if exists.length == 0
                   grunt.fail.warn "Broken link in #{filepath}: #{href}"
+            # jsfiddle APIs have no support for Coffeescript - must do manually
+            ###
+            for fiddle in $('a[data-fiddle]').map((i,x) -> $(x))
+              name = fiddle.attr('data-fiddle')
+              code = fiddle.parent().next().find('pre').text()
+              grunt.file.mkdir('examples')
+              grunt.file.write('examples/' + name + '.coffee', code)
+            ###
             grunt.file.write(filepath, $.html())
     catch e
       grunt.fail.warn(e.toString())
