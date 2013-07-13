@@ -509,8 +509,8 @@ block content
       $showResults = input {type: 'checkbox', id: 'show-results'}
       label {for: 'show-results'}, ['Show type-ahead results']
       div {class: 'results'}, bind ->
-        if $query.rx('focused') and $showResults.rx('checked')
-          for doc in docs when _(doc.title).startsWith($query.rx('val'))
+        if $query.rx('focused').get() and $showResults.rx('checked').get()
+          for doc in docs when _(doc.title).startsWith($query.rx('val').get())
             a {href: doc.url}, [doc.title]
         else
           []
@@ -519,7 +519,5 @@ block content
     ```
 
     We are using three different types of reactive element attributes.
-    `rx(property)` treats the value of the given property (focused, checked, val)
-    as a cell and returns `get` on that cell; the `bind` is reactive to any of
-    them.
-
+    `rx(property)` returns the value of the given property (focused, checked, val)
+    as a cell.
