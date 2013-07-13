@@ -8,72 +8,158 @@ block content
 
     Here's a quick taste of what using Reactive is like.
 
-    To follow these examples, include this into your HTML:
+    To follow these examples, use the following scaffolding for your HTML,
+    which just compiles your CoffeeScript client-side (see also [Getting
+    Started][tutorial] for more on setup):
+
+    [tutorial]: tutorial.html
 
     ```html
-    <script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js'></script>
-    <script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js'></script>
-    <script src='//cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.3/coffee-script.min.js'></script>
-    <script src='//cdnjs.cloudflare.com/ajax/libs/reactive-coffee/0.0.0/reactive-coffee.min.js'></script>
+    <html>
+      <body>
+        <script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js'></script>
+        <script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js'></script>
+        <script src='//cdnjs.cloudflare.com/ajax/libs/underscore.string/2.3.0/underscore.string.min.js'></script>
+        <script src='//cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.3/coffee-script.min.js'></script>
+        <script src='//cdnjs.cloudflare.com/ajax/libs/reactive-coffee/0.0.0/reactive-coffee.min.js'></script>
+        <script type="text/coffeescript">
+          bind = rx.bind
+          rxt.importTags()
+          _.mixin(_.str.exports())
+
+          # Example code goes here!
+        </script>
+      </body>
+    </html>
     ```
 
-    A regular static DOM:
+    Here's a static DOM, just showing regular elements, attributes, and text:
 
     ```coffeescript
     $('body').append(
-      div { class: 'main-content' }, [
-        h1 {}, [ 'Hello world!' ]
-        ul { class: 'nav' }, [
-          li {}, [ 'Home' ]
-          li {}, [ 'About' ]
-          li {}, [ 'Contact' ]
+      div {class: 'main-content'}, [
+        h1 {}, ['Hello world!']
+        ul {class: 'nav'}, [
+          li {}, ['Home']
+          li {}, ['About']
+          li {}, ['Contact']
         ]
-        input { type: 'text', placeholder: 'Your name here' }
+        input {type: 'text', placeholder: 'Your name here'}
       ]
     )
     ```
 
-    A simple reactive example implementing a todo list (you can also find a more
-    complete TodoMVC example in `examples/`):
+    Here's a simple example showing off some reactivity.  This is a contact
+    list, where clicking on a contact will show that contact in the details
+    view below the list.  The code consists of a single _reactive cell_, which
+    contains the currently selected contact, and which is what the view
+    components are bound to reflect:
 
     ```coffeescript
-    class Task
-      constructor: (description, isDone) ->
-        @description = rx.cell(description)
-        @isDone = rx.cell(isDone)
+    # Model: list of Contact objects.
 
-    tasks = rx.array([
-      new Task('Get milk', false)
-      new Task('Play with Reactive Coffee', false)
-      new Task('Walk the dog', false)
-    ])
+    class Contact
+      constructor: (@name, @phone) ->
+
+    contacts = [
+      new Contact('John', '123-4567')
+      new Contact('Jane', '987-6543')
+      new Contact('Jack', '234-5678')
+      new Contact('Jill', '876-5432')
+    ]
+
+    # View: list of contacts and selected contact's details.
+
+    selected = rx.cell(contacts[0])
 
     $('body').append(
-      div {class: 'task-manager'}, [
-        h1 {}, ["Tasks for today"]
-        ul {class: 'tasks'}, tasks.map (task) ->
-          li {class: 'task'}, [
-            input {
-              type: 'checkbox'
-              checked: bind -> task.isDone.get()
-              init: -> @change => task.isDone.set(@val())
-            }
-            task.description.get()
-          ]
-        $newTask = input {type: 'text', placeholder: 'Enter new task'}
+      div {}, [
+        ul {}, contacts.map (contact) ->
+          li {init: -> @click => selected.set(contact)}, ["#{contact.name}"]
+        div {contact: 'details'}, [
+          div {}, bind -> ["Name: #{selected.get().name}"]
+          div {}, bind -> ["Phone: #{selected.get().phone}"]
+        ]
       ]
     )
-
-    $newTask.keydown (e) ->
-      if e.key == 13
-        tasks.push(new Task($(this).val(), false))
-        $(this).val('')
     ```
 
-    Recursively render a tree structure, something that's a bit more complex to
-    incrementally maintain otherwise:
+    Here's a slightly more interesting example, with the same list-plus-details
+    UI structure as the last example.  Here instead we have a list of
+    time-varying signals.  Clicking a signal will show it in a details view,
+    where an animated block's position reflects the currently selected signal
+    value.
+
+    The signals are functions of the current time, which itself is a reactive
+    cell.
 
     ```coffeescript
+    secs = rx.cell(new Date() / 1000)
+    setInterval (-> secs.set(new Date() / 1000)), 50
+
+    # Model: list of Signals.
+
+    class Signal
+      constructor: (@name, @value) ->
+
+    signals = [
+      new Signal('sin', bind -> Math.sin(secs.get()))
+      new Signal('cos', bind -> Math.cos(secs.get()))
+      new Signal('saw', bind -> (secs.get() % 2) - 1)
+      new Signal('step', bind -> Math.floor(secs.get() % 2))
+    ]
+
+    # We show off how to define a simple reusable component (the signal details
+    # view with the animated block).
+
+    selectionDisplay = (opts) ->
+      div {class: 'display'}, bind ->
+        sel = opts.signal.get()
+        [
+          div {class: 'time'}, bind -> ["Time: #{secs.get()}"]
+          div {class: 'name'}, bind -> ["Signal name: #{sel.name}"]
+          div {class: 'reading'}, bind -> ["Reading: #{sel.value.get()}"]
+          div {class: 'position: relative; width: 110px'}, [
+            div {
+              style: bind -> """
+                width: 10px;
+                height: 10px;
+                background: black;
+                position: absolute;
+                left: #{(sel.value.get() + 1) * 100}px;
+              """
+            }
+          ]
+        ]
+
+    # The main view.
+
+    selected = rx.cell(signals[0])
+    $('body').append(
+      div {class: 'display'}, [
+        selectionDisplay {signal: bind -> selected.get()}
+        ul {}, signals.map (signal) ->
+          li {}, [
+            a {href: 'javascript: void 0', init: -> @click => selected.set(signal)}, [
+              'Show signal'
+            ]
+            ' '
+            span {}, bind -> ["#{signal.name}: #{signal.value.get()}"]
+          ]
+      ]
+    )
+    ```
+
+    Here's something that's more complex to incrementally maintain outside of
+    this framework: recursively render a tree structure (i.e., a _recursive
+    view_).  A button is available for inserting nodes at random locations in
+    the tree.  Note how these insertions result in only small DOM
+    manipulations, without needing to compute any differences over the full
+    tree set.
+
+    ```coffeescript
+    # Model: each tree node has a variable number of children.
+
     class TreeNode
       constructor: (value, children) ->
         @value = rx.cell(value)
@@ -88,34 +174,50 @@ block content
       ])
     ])
 
-    # Nested `bind`/`map` calls are insulated from parents, re-rendering only
-    # what's necessary.
+    # View: nested `bind`/`map` calls are insulated from parents, re-rendering only
+    # what's necessary.  Clicking a node appends a child under it.
+
     recurse = (node) ->
       li {}, [
-        span {}, bind -> [ node.value.get() ]
-        ul {}, node.children.map -> recurse
+        span {init: -> @click => node.children.push(new TreeNode("new node", []))}, bind -> [
+          node.value.get()
+        ]
+        ul {}, node.children.map recurse
       ]
 
-    $('body').append( ul {}, [ recurse(root) ] )
+    $('body').append(
+      div {}, [
+        ul {}, [recurse(root)]
+        button {init: -> @click => addRandNode()}, ['Add random node']
+      ]
+    )
     ```
 
     You can also have elements depend certain attributes of each other.  Here is a
-    text box that searches/filters the given list.
+    text box that searches/filters the given list.  The text box's value is a
+    reactive cell that the list binds to.
 
     ```coffeescript
-    countries = [...]
-    $searchBox = input {
-      type: 'text'
-      placeholder: 'Type a country name'
-    }
-    ul {}, bind ->
-      for country in countries
-        if _(country).startsWith($searchBox.rx('text'))
-          li {}, [country]
+    countries = [
+      'Uganda', 'United Kingdom', 'United States', 'Zambia', 'Zimbabwe'
+    ]
+    $('body').append(
+      div {class: 'completion'}, [
+        $searchBox = input {type: 'text', placeholder: 'Type a country name'}
+        ul {}, bind ->
+          query = $searchBox.rx('val').get().toLowerCase()
+          for country in countries when _(country.toLowerCase()).startsWith(query)
+            li {}, [country]
+      ]
+    )
     ```
 
     Currently there is a complete [TodoMVC] example in the `examples/` directory
-    (see the [source]) and on [jsFiddle][fiddle].  More examples will be added!
+    (see the [source]) and on [jsFiddle][fiddle].  The front page also features
+    a simple task manager example.
+
+    More examples will be added!  We're especially interested in reproducing
+    examples demoed by other frameworks.
 
     [TodoMVC]: http://todomvc.com/
     [source]: https://github.com/yang/reactive-coffee/blob/master/examples/todomvc/index.jade
