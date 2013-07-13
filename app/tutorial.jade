@@ -8,15 +8,20 @@ block content
 
     ## Getting Started
 
-    Reactive depends on jQuery and Underscore.
+    Reactive depends on jQuery and Underscore:
 
     ```html
     <script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js'></script>
     <script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js'></script>
-    <script src='//cdnjs.cloudflare.com/ajax/libs/coffeescript/0.0.0/coffeescript.min.js'></script>
     ```
 
-    If you're using `bower`, you can also add Reactive as a dependency for your
+    Reactive is hosted on [cdnjs] as well, so you can source directly from there:
+
+    ```html
+    <script src='//cdnjs.cloudflare.com/ajax/libs/reactive-coffee/0.0.0/reactive-coffee.min.js'></script>
+    ```
+
+    If you're using [Bower], you can also add Reactive as a dependency for your
     project:
 
     ```
@@ -27,13 +32,31 @@ block content
     Reactive (temp. note: bower [has issues solving dependency version
     constraints][bower bug]).
 
+    [Bower]: http://bower.io/
+    [cdnjs]: http://cdnjs.com/
     [bower bug]: https://github.com/bower/bower/issues/540
 
+    If you are not using server-side CoffeeScript compilation (recommended for
+    production), you can get started quickly with client-side compilation:
+
+    ```html
+    <script src='//cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.3/coffee-script.min.js'></script>
+    <script type="text/coffeescript">
+      # Your code goes here!
+    </script>
+    ```
+
     To start using the tags directly without having to prefix them with the `rxt`
-    namespace, use:
+    namespace, include this at the top of your CoffeeScript:
 
     ```coffeescript
     rxt.importTags()
+    ```
+
+    The following examples also lift `rx.bind` out of its namespace:
+
+    ```coffeescript
+    bind = rx.bind
     ```
 
     ## Cells
