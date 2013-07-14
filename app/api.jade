@@ -82,8 +82,15 @@ block content
 
     **Free functions**
 
-    - `mktag(tag)`: returns a tag function of the given tag name.  The other tags
-      are simply aliases to this, e.g.: `div = mktag('div')`.
+    - `mktag(tag)`: returns a tag function of the given tag name.  The various
+      tags like `div` and `h2` are simply aliases; e.g., `div =
+      mktag('div')`.  Tag functions themselves take `(attrs, children)`, where
+      `attrs` is a JavaScript object of HTML attributes and `children` is an
+      optional list of child elements (jQuery-wrapped) and/or strings (for text
+      nodes).  It returns an instance of the specified element wrapped in a
+      jQuery object.  `attrs`, besides normal HTML attributes, takes a special
+      `init` attribute, which is a 0-ary function that is run immediately upon
+      instantiation of the element.
     - `importTags()`: populate the global namespace with the tag symbols, so you
       don't need have `rxt` all over your templates.  Useful for quickly throwing
       something together.
