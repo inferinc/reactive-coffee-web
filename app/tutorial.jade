@@ -59,6 +59,10 @@ block content
     bind = rx.bind
     ```
 
+    You can play with the following examples in this [minimal jsFiddle].
+
+    [minimal jsFiddle]: //TODO
+
     ## Cells
 
     The core building block is an _observable cell_, `ObsCell`.
@@ -72,6 +76,7 @@ block content
     value:
 
     ```coffeescript
+    x = rx.cell(0)
     x.set(3)
     x.get() # 3
     ```
@@ -83,7 +88,7 @@ block content
     For simple cells like the above, there's just a single _on-set_ event type:
 
     ```coffeescript
-    subscription = x.onSet.sub ([oldVal, newVal]) ->
+    subscriptionId = x.onSet.sub ([oldVal, newVal]) ->
       console.log "x was set from #{oldVal} to #{newVal}"
     ```
 
@@ -94,7 +99,7 @@ block content
     a listener:
 
     ```coffeescript
-    x.onSet.unsub(subscription)
+    x.onSet.unsub(subscriptionId)
     ```
 
     You can now start reacting to these events.  For instance:
@@ -147,7 +152,7 @@ block content
       if showRealName.get()
         "Full name: #{fullName.get()}"
       else
-        "Fake naem: #{fakeName.get()}"
+        "Fake name: #{fakeName.get()}"
     ```
 
     The bindings are managed such that only the dependent cells that could possibly
@@ -266,6 +271,14 @@ block content
         p {}, ["Sign up to connect with #{user.name}!"]
     ]
     ```
+
+    Side note: for loops, it's generally better to prefer using `.map()`, since
+    it's the same interface for both `Array` and `rx.array`, and it also
+    creates a unique binding for the element, avoiding a [common pitfall] with
+    Javascript/CoffeeScript loops and closures (you can also use CoffeeScript's
+    handy `do` keyword).
+
+    [common pitfall]: http://stackoverflow.com/questions/750486/javascript-closure-inside-loops-simple-practical-example
 
     Tags are really just functions that return DOM elements (wrapped in jQuery
     objects), so you are free to attach behaviors to them:
@@ -479,6 +492,10 @@ block content
     Now we can use this with:
 
     ```coffeescript
+    modifyTab = -> ['MODIFY']
+    createTab = -> ['CREATE']
+    stylesTab = -> ['STYLES']
+
     tabs {
       activeClass: 'my-active-tab'
       tabs: rx.array([
@@ -505,19 +522,31 @@ block content
     focused on the input text field:
 
     ```coffeescript
-    docs = [...]
-    div {class: 'search'}, [
-      $query = input {type: 'text', placeholder: 'Enter query'}
-      $showResults = input {type: 'checkbox', id: 'show-results'}
-      label {for: 'show-results'}, ['Show type-ahead results']
-      div {class: 'results'}, bind ->
-        if $query.rx('focused').get() and $showResults.rx('checked').get()
-          for doc in docs when _(doc.title).startsWith($query.rx('val').get())
-            a {href: doc.url}, [doc.title]
-        else
-          []
-      ]
+    class Doc
+      constructor: (@title, @url) ->
+
+    docs = [
+      new Doc('An axiomatic basis for computer programming', 'http://sigpl.or.kr/school/2005w/slides/2_17_1.pdf')
+      new Doc('The next 700 programming languages', 'http://www.thecorememory.com/Next_700.pdf')
+      new Doc('A theory of type polymorphism in programming', 'http://courses.engr.illinois.edu/cs421/sp2012/project/milner-polymorphism.pdf')
+      new Doc('A semantics of multiple inheritance', 'http://lucacardelli.name/Papers/Inheritance.pdf')
     ]
+
+    $('body').append(
+      div {class: 'search'}, [
+        $query = input {type: 'text', placeholder: 'Enter query'}
+        $showResults = input {type: 'checkbox', id: 'show-results'}
+        label {for: 'show-results'}, ['Show type-ahead results']
+        div {class: 'results'}, bind ->
+          focused = $query.rx('focused')
+          console.log 'firing', focused
+          if focused.get() and $showResults.rx('checked').get()
+            for doc in docs when doc.title.indexOf($query.rx('val').get()) >= 0
+              div {}, [a {href: doc.url}, [doc.title]]
+          else
+            []
+      ]
+    )
     ```
 
     We are using three different types of reactive element attributes.
