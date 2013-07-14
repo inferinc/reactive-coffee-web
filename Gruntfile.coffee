@@ -1,8 +1,8 @@
 # Generated on 2013-07-01 using generator-webapp 0.2.6
 "use strict"
 require "coffee-script"
-pygmentize = require("./pygmentize")
-autolink = require("./autolink")
+pygmentize = require("./tasks/pygmentize")
+autolink = require("./tasks/autolink")
 LIVERELOAD_PORT = 35729
 lrSnippet = require("connect-livereload")(port: LIVERELOAD_PORT)
 mountFolder = (connect, dir) ->
