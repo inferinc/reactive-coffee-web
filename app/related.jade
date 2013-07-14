@@ -12,6 +12,8 @@ block content
     draws inspiration from them.  Ideally, there wouldn't have been a need to
     create Reactive.
 
+    More to be written here in time!
+
     - Any of the multitude of declarative UI toolkits based on reactive
       programming, especially FRP in the Haskell universe, but also [Bling],
       [FlapJax], and others rooted more in the programming languages community.
@@ -47,19 +49,23 @@ block content
       distinguished from React's view diff computation—Angular does not need to
       construct a lightweight DOM to diff since it is aware of the dependencies,
       since its bindings are restricted to simple path-like accessors against the
-      current scope (with optional filters).  This shares similar scalability
-      worries as the but with an arbitrary 
+      current scope (with optional filters).  However, it must compute changes
+      in the model in a process it calls _dirty checking_, which does not scale
+      and has historically been source of code complexity.
 
     - [Ember] offers its own template language that feels right at home if you are
       coming from a server-side templates background.  It has a
-      Mustache/Handlebars-ish template language that, like Angular, uses simple
-      path-like accessors against the current context.
+      Mustache-ish template language that, like Angular, uses simple
+      path-like accessors against the current context, but with a mix of
+      Ember-specific directives such as action, link, bindAttr, outlet,
+      helpers, etc.  The framework introduces its own class/object model, and
+      also uses explicit Controller objects to tie together models and views.
 
     - [Polymer] for its brazen use of new but unstable technologies such as
       `Object.observe`, Web Components, and Shadow DOM.  Some good ideas here, but
       there's still a good deal of platform/tooling immaturity as well as more
       verbose scaffolding around creating components and defining reactive
-      behaviors
+      behaviors.
 
     - [React] shares a similar approach of leveraging a full programming language
       (JS) rather than a more restrictive template language for declaratively
