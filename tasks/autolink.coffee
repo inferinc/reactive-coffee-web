@@ -40,7 +40,9 @@ module.exports = (grunt) ->
               else if not href.match(/^(\w+:)?\/\//)
                 exists =
                   if _(href).startsWith('/')
-                    grunt.file.glob.sync('{app,.tmp}' + href)
+                    if href != '/reactive-coffee/'
+                      grunt.fail.warn "Bad abs. link in #{filepath}: #{href}"
+                    ['index.html']
                   else
                     grunt.file.glob.sync(path.join(path.dirname(filepath), href))
                 if exists.length == 0
