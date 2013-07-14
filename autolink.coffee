@@ -24,12 +24,12 @@ module.exports = (grunt) ->
                 for hdr in $('#main-content h2').map((i,x) -> $(x))
                   anchor = hdr.text().replace(/\W/, '-').toLowerCase()
                   anchors.push(anchor)
-                  hdr.html($('<a/>').attr('name', anchor).html(hdr.html()))
                   toc.append(
                     $('<li/>').append(
-                      $('<a/>').attr('href', "##{anchor}").text(hdr.text())
+                      $('<a/>').attr('href', "##{anchor}").html(hdr.html())
                     )
                   )
+                  hdr.html($('<a/>').attr('name', anchor).html(hdr.html()))
                 toc = if toc.children().length > 0 then toc else $()
                 $(link).addClass('current').parent().append(toc)
             for link in $('a[href]').map((i,x) -> $(x))
