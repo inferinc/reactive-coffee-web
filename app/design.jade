@@ -79,8 +79,17 @@ block content
       visualizations over the data, where individual data points are represented in
       the visualizations
 
-    Finally, Reactive also aims to be a compact framework.  The documentation
-    you're now reading is significantly longer than the code.
+    Finally, Reactive also aims to be a compact framework.  The
+    documentation/website you're now reading is significantly longer than the
+    code.  Reactive focuses only on bindings and templates, and nothing else.
+    This is the "Flask-over-Django" approach of choosing best-of-breed
+    libraries for different concerns.  For instance, certain frameworks also
+    include a routing subsystem; we recommend using instead a [stand-alone,
+    dedicated library for routing][routing], of which we recommend
+    [Crossroads].
+
+    [routing]: http://stackoverflow.com/questions/6315505/preferred-client-side-routing-solution
+    [Crossroads]: http://millermedeiros.github.io/crossroads.js/
 
     For more on design choices and to juxtapose this framework against specific
     other frameworks in, refer to [FAQ](faq.html) and [Related
