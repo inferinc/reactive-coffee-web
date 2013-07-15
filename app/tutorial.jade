@@ -329,6 +329,15 @@ block content
       ]
     ```
 
+    `init` was an example of a _special attribute_.  These are just attributes
+    that are intercepted and handled differently from others, which are simply
+    passed on as regular HTML attributes on the DOM element.  Besides `init`,
+    built-in special attributes include all jQuery events: `click`, `focus`,
+    `mouseleave`, `keyup`, `load`, etc.
+
+    You can also add your own special attribute by inserting a function into
+    the `specialAttrs` global structure.
+
     ## Reactive Templates
 
     Reactive templates tie together the UI-building style from the previous section

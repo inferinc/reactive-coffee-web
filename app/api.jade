@@ -85,12 +85,10 @@ block content
     - `mktag(tag)`: returns a tag function of the given tag name.  The various
       tags like `div` and `h2` are simply aliases; e.g., `div =
       mktag('div')`.  Tag functions themselves take `(attrs, children)`, where
-      `attrs` is a JavaScript object of HTML attributes and `children` is an
-      optional list of child elements (jQuery-wrapped) and/or strings (for text
-      nodes).  It returns an instance of the specified element wrapped in a
-      jQuery object.  `attrs`, besides normal HTML attributes, takes a special
-      `init` attribute, which is a 0-ary function that is run immediately upon
-      instantiation of the element.
+      `attrs` is a JavaScript object of HTML attributes and/or _special
+      attributes_ and `children` is an optional list of child elements
+      (jQuery-wrapped) and/or strings (for text nodes).  They return an
+      instance of the specified element wrapped in a jQuery object.  See also `specialAttrs` below for more on special attributes.
     - `importTags()`: populate the global namespace with the tag symbols, so you
       don't need have `rxt` all over your templates.  Useful for quickly throwing
       something together.
@@ -105,3 +103,85 @@ block content
     - `rx(property)`: lazily create (or take the cached instance) of a cell whose
       value is maintained to reflect the desired property on the element.
       `property` can be `'checked'`, `'focused'`, or `'val'`.  Returns the cell.
+
+    **Special attributes**
+
+    _Special attributes_ are handled differently from normal.  The built-in
+    special attributes are primarily events like `click`:
+
+    ```coffeescript
+    button {click: -> console.log('hello')}, 'Hello'
+    ```
+
+    Special attributes are really just a convenient short-hand for running the
+    handler functions after constructing object.  The above example is equivalent to:
+
+    ```coffeescript
+    $button = button 'Hello'
+    $button.click -> console.log('hello')
+    ```
+
+    The built-in special attributes available include:
+
+    - `init`: which is a 0-ary function that is run immediately upon
+      instantiation of the element.
+
+    - events like `click`, `focus`, `mouseleave`, `keyup`, `load`, etc.,:
+      these are available for all jQuery events.  The handlers are similar to
+      those you would pass to a jQuery event method—they take a jQuery event
+      and return false to stop propagation—but the context is the
+      jQuery-wrapped element instead of the raw element.  The full list:
+
+        - `blur`
+        - `change`
+        - `click`
+        - `dblclick`
+        - `error`
+        - `focus`
+        - `focusin`
+        - `focusout`
+        - `hover`
+        - `keydown`
+        - `keypress`
+        - `keyup`
+        - `load`
+        - `mousedown`
+        - `mouseenter`
+        - `mouseleave`
+        - `mousemove`
+        - `mouseout`
+        - `mouseover`
+        - `mouseup`
+        - `ready`
+        - `resize`
+        - `scroll`
+        - `select`
+        - `submit`
+        - `toggle`
+        - `unload`
+
+    `specialAttrs`: an object mapping special attribute names to the functions
+    that handle them.  When an element specifies a special attribute, this
+    handler function is invoked.  The handler function takes `(element, value,
+    attrs, contents)`, where:
+
+    - `element` is the element being operated on
+    - `value` is the value of this special attribute for `element`
+    - `attrs` is the full map of attributes for `element`
+    - `contents` is the content/children for `element` (which can be a
+      string, `RawHtml`, array, `ObsCell`, or `ObsArray`)
+
+    So for instance, we can create a special attribute `drag` that just
+    forwards to the jQuery `[jdragdrop]` plug-in:
+
+    ```coffeescript
+    rxt.specialAttrs.drag = (elt, fn, attrs, contents) -> elt.drag(fn)
+    ```
+
+    and then use it like so in your templates:
+
+    ```coffeescript
+    div {class: 'block', drag: -> $(this).css('top', e.offsetY)}
+    ```
+
+    [jdragdrop]: https://github.com/haberman/jdragdrop
