@@ -219,7 +219,7 @@ block content
     div {class: 'sidebar'}, [
       h2 {}, ['Send a message']
       form {action: '/msg', method: 'POST'}, [
-        input {type: 'text', name: 'comment', placeholder: 'Your message'}
+        input {type: 'text', name: 'comment', placeholder: 'Your message'}, []
         select {name: 'recipient'}, [
           option {value: '0'}, ['John']
           option {value: '1'}, ['Jane']
@@ -264,7 +264,7 @@ block content
     # Conditionals:
 
     div {class: 'profile'}, [
-      img {src: "#{user.picUrl}"}
+      img {src: "#{user.picUrl}"}, []
       if signedIn
         button {}, ["Add #{user.name}" as a friend."]
       else
@@ -280,11 +280,27 @@ block content
 
     [common pitfall]: http://stackoverflow.com/questions/750486/javascript-closure-inside-loops-simple-practical-example
 
+    So far we've been feeding full explicit arguments to each tag.  They are
+    actually more flexible in what they take.  We can clean up a bunch of the
+    syntactic noise in the last example by replacing `['string']` with just
+    `'string'`, and omitting empty arguments like `{}` and `[]` (the remaining
+    argument is treated as the attributes or the contents based on its type):
+
+    ```coffeescript
+    div {class: 'profile'}, [
+      img {src: "#{user.picUrl}"}
+      if signedIn
+        button "Add #{user.name}" as a friend."
+      else
+        p "Sign up to connect with #{user.name}!"
+    ]
+    ```
+
     Tags are really just functions that return DOM elements (wrapped in jQuery
     objects), so you are free to attach behaviors to them:
 
     ```coffeescript
-    $button = button {class: 'submit-btn'}, ['Click Me!']
+    $button = button {class: 'submit-btn'}, 'Click Me!'
     $button.click -> $(this).text('I been clicked.')
     ```
 
@@ -295,9 +311,9 @@ block content
 
     ```coffeescript
     table {}, properties.map (prop) ->
-      tr {}, [
-        td {}, [prop.name]
-        td {}, [
+      tr [
+        td prop.name
+        td [
           input {
             type: 'text'
             value: prop.value
@@ -314,9 +330,9 @@ block content
 
     ```coffeescript
     table {}, properties.map (prop) ->
-      $row = tr {}, [
-        td {}, [prop.name]
-        td {}, [
+      $row = tr [
+        td prop.name
+        td [
           input {
             type: 'text'
             value: prop.value
@@ -333,7 +349,21 @@ block content
     that are intercepted and handled differently from others, which are simply
     passed on as regular HTML attributes on the DOM element.  Besides `init`,
     built-in special attributes include all jQuery events: `click`, `focus`,
-    `mouseleave`, `keyup`, `load`, etc.
+    `mouseleave`, `keyup`, `load`, etc.  So we ould have bound the blur event
+    directly (note it also takes a jQuery object as `this`):
+
+    ```coffeescript
+    ...
+          input {
+            type: 'text'
+            value: prop.value
+            placeholder: 'Enter property value'
+            blur: ->
+              $row.css('opacity', .5)
+              setProperty(prop, @val())
+          }
+    ...
+    ```
 
     You can also add your own special attribute by inserting a function into
     the `specialAttrs` global structure.
@@ -367,7 +397,7 @@ block content
     ```coffeescript
     names = rx.array(['1','2','3','4','5'])
     $('body').append($nameList = div {class: 'name-list'})
-    spans = names.map (name) -> span {}, [name]
+    spans = names.map (name) -> span name
     spans.onChange.sub ([index, added, removed]) ->
       # Homework: fill in logic here for efficiently inserting/removing DOM
       # nodes!
@@ -389,7 +419,7 @@ block content
 
     $('body').append(
       div {class: 'name-list'}, names.map (name) ->
-        span {}, [name]
+        span name
     )
     ```
 
@@ -405,21 +435,25 @@ block content
     $('body').append(
       ul {class: 'tasks'}, bind ->
         for task in tasks.get()
-          li {class: 'task'}, ["User: #{task}"]
+          li {class: 'task'}, "User: #{task}"
     )
     ```
 
     Any attribute can be a cell:
 
     ```coffeescript
-    input { value: bind -> displayName.get() }
+    input {value: bind -> displayName.get()}
     ```
 
-    the contents can be a cell that returns an array (of strings or elements):
+    Contents can be a cell that returns an array (of strings or elements):
 
     ```coffeescript
     span {}, bind -> [displayName.get()]
     div {}, bind -> names.all()
+
+    # shorthand:
+    span bind -> displayName.get()
+    div bind -> names.all()
     ```
 
     or an observable array:
@@ -428,9 +462,16 @@ block content
     div {}, names
     # results in: <div>01234</div>
 
+    # shorthand:
+    div names
+
     div {}, names.map (name) ->
       span {}, [name]
     # results in: <div><span>0</span><span>1</span>...</div>
+
+    # shorthand:
+    div names.map (name) ->
+      span name
     ```
 
     You have very fine-grained control over the re-rendering process.  For
@@ -455,7 +496,7 @@ block content
     If we wanted to just re-render individual elements, we could do that with:
 
     ```coffeescript
-    select {}, app.users.map (user) ->
+    select app.users.map (user) ->
       option {value: bind -> "#{user.id.get()}"}, bind -> "#{user.name.get()}"
     ```
 
@@ -463,7 +504,7 @@ block content
     anything changed, we could do so with:
 
     ```coffeescript
-    select {}, bind -> app.users.all().map (user) ->
+    select bind -> app.users.all().map (user) ->
       option {value: "#{user.id.get()}"}, "#{user.name.get()}"
     ```
 
@@ -491,7 +532,7 @@ block content
                 "nav-tab"
                 "#{if activeTabIndex.get() == i then opts.activeClass else ''}"
               ].join(' ')
-            init: -> @click => activeTabIndex.set(i)
+            click: -> activeTabIndex.set(i)
           }, [tabName]
         div {class: 'tab-content'}, bind ->
           [tabName, tabContents] = opts.tabs.at(activeTabIndex.get())
@@ -546,13 +587,15 @@ block content
       div {class: 'search'}, [
         $query = input {type: 'text', placeholder: 'Enter query'}
         $showResults = input {type: 'checkbox', id: 'show-results'}
-        label {for: 'show-results'}, ['Show type-ahead results']
+        label {for: 'show-results'}, 'Show type-ahead results'
         div {class: 'results'}, bind ->
           focused = $query.rx('focused')
           console.log 'firing', focused
           if focused.get() and $showResults.rx('checked').get()
             for doc in docs when doc.title.indexOf($query.rx('val').get()) >= 0
-              div {}, [a {href: doc.url}, [doc.title]]
+              div [
+                a {href: doc.url}, doc.title
+              ]
           else
             []
       ]
