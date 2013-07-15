@@ -308,8 +308,9 @@ block content
       ]
     ```
 
-    Since CoffeeScript assignments are expressions, we also have a convenient way
-    of naming elements:
+    Since CoffeeScript assignments are expressions and it automatically manages
+    variable scoping, we also have a convenient way of naming elements
+    anywhere in a template structure:
 
     ```coffeescript
     table {}, properties.map (prop) ->
