@@ -72,7 +72,7 @@ block body
             h1 bind -> "#{tasks.length()} task(s) for today"
             ul {class: 'tasks'}, tasks.map (task) ->
               li {class: 'task'}, [
-                input {type: 'checkbox', click: -> task.isDone.set(@is(':checked'))}
+                input {type: 'checkbox', click: -> task.isDone.set(@is(':checked')); true}
                 span {class: 'descrip'}, bind ->
                   "#{task.descrip.get()} (#{task.priority.get()})"
                 a {href: 'javascript: void 0', click: -> currentTask.set(task)}, 'Edit'
