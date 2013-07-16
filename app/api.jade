@@ -133,8 +133,8 @@ block content
     - `importTags()`: populate the global namespace with the tag symbols, so you
       don't need have `rxt` all over your templates.  Useful for quickly throwing
       something together.
-    - `rawHtml(html)`: wrapper for strings that tags won't escape when rendering;
-      example: `div {}, [rawHtml('<span>hello</span>')]`
+    - `rawHtml(html)`: returns a `RawHtml` wrapper for strings that tags won't
+      escape when rendering; example: `div {}, [rawHtml('<span>hello</span>')]`
     - Tags: `p`, `br`, `ul`, `li`, `span`, `anchor`, `div`, `input`, `select`,
       `option`, `label`, `button`, `fieldset`, `legend`, `section`, `header`,
       `footer`, `strong`, `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `h7`
