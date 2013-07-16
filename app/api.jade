@@ -23,6 +23,8 @@ block content
         - `SrcMap`: a source object, one that can be directly mutated
         - `DepMap`: a dependent object, one whose value is some transformation of
           another observable object
+    - `Ev`: an event node; serves as a pub-sub node for events of a certain
+      type
 
     **Free functions**
 
@@ -42,6 +44,8 @@ block content
     **`ObsCell`**
 
     - `get()`: return current value of the cell
+    - `onSet`: the event that is fired after the value of the cell is
+      changed.  The event data is an array of two elements, `[oldVal, newVal]`.
 
     **`SrcCell`**
 
@@ -53,6 +57,11 @@ block content
     - `all()`: return raw array copy of all elements
     - `length()`: return size of the array
     - `map(fn)`: return `DepArray` of given function mapped over this array
+    - `onChange`: the event that is fired after any part of the array is
+      changed.  The event data is an array of three elements: `[index, added,
+      removed]`, where `index` is the index where the change occurred, `added`
+      is the sub-array of elements that were added, and `removed` is the
+      sub-array of elements that were removed.
 
     **`SrcArray`**
 
@@ -69,11 +78,28 @@ block content
 
     - `get(k)`: return value associated with key `k`
     - `all()`: return raw object copy
+    - `onAdd`: the event that is fired after an element is added.  The event
+      data is `[key, newVal]`.
+    - `onRemove`: the event that is fired after an element is removed.  The
+      event data is `[key, oldVal]`.
+    - `onChange`: the event that is fired after a key's value is changed.  The
+      event data is `[key, oldVal, newVal]`.
 
     **`SrcMap`**
 
     - `put(k, v)`: associate value `v` with key `k` and return any prior value associated with `k`
     - `remove(k)`: remove the entry associated at key `k`
+
+    **`Ev`**
+
+    - `sub(listener)`: subscribes a listener function for events from this
+      event node and returns a unique ID for this subscription, which can be used
+      as the handle by which to unsubscribe later.  The listener takes a single
+      argument, whose type depends on the event, and is called every time an
+      event is fired on this event node.
+    - `pub(data)`: publish an event, described by the data in `data`.  `data`
+      is what will be passed to all the subscribed listeners.
+    - `unsub(subscriptionId)`: detaches a listener from this event.
 
     ## `rxt` Namespace
 
