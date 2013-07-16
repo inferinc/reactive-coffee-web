@@ -50,6 +50,11 @@ block content
     **`SrcCell`**
 
     - `set(x)`: set value of cell to `x` and return old value of `x`
+    - inherits `ObsCell`
+
+    **`DepCell`**
+
+    - inherits `ObsCell`
 
     **`ObsArray`**
 
@@ -73,6 +78,11 @@ block content
     - `push(x)`: append `x` to the end of the array
     - `put(i, x)`: replace element `i` with value `x`
     - `replace(xs)`: replace entire array with raw array `xs`
+    - inherits `ObsArray`
+
+    **`DepArray`**
+
+    - inherits `ObsArray`
 
     **`ObsMap`**
 
@@ -89,6 +99,11 @@ block content
 
     - `put(k, v)`: associate value `v` with key `k` and return any prior value associated with `k`
     - `remove(k)`: remove the entry associated at key `k`
+    - inherits `ObsMap`
+
+    **`DepMap`**
+
+    - inherits `ObsMap`
 
     **`Ev`**
 
