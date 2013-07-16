@@ -41,22 +41,22 @@ block content
       update before the `DepCell` updates itself (yes, this needs to be a
       configurable parameter)
 
-    **`ObsCell`**
+    **`ObsCell` members**
 
     - `get()`: return current value of the cell
     - `onSet`: the event that is fired after the value of the cell is
       changed.  The event data is an array of two elements, `[oldVal, newVal]`.
 
-    **`SrcCell`**
+    **`SrcCell` members**
 
     - `set(x)`: set value of cell to `x` and return old value of `x`
     - inherits `ObsCell`
 
-    **`DepCell`**
+    **`DepCell` members**
 
     - inherits `ObsCell`
 
-    **`ObsArray`**
+    **`ObsArray` members**
 
     - `at(i)`: return element at `i`
     - `all()`: return raw array copy of all elements
@@ -68,7 +68,7 @@ block content
       is the sub-array of elements that were added, and `removed` is the
       sub-array of elements that were removed.
 
-    **`SrcArray`**
+    **`SrcArray` members**
 
     - `splice(index, count, additions...)`: replace `count` elements starting at
       `index` with `additions`
@@ -80,11 +80,11 @@ block content
     - `replace(xs)`: replace entire array with raw array `xs`
     - inherits `ObsArray`
 
-    **`DepArray`**
+    **`DepArray` members**
 
     - inherits `ObsArray`
 
-    **`ObsMap`**
+    **`ObsMap` members**
 
     - `get(k)`: return value associated with key `k`
     - `all()`: return raw object copy
@@ -95,17 +95,17 @@ block content
     - `onChange`: the event that is fired after a key's value is changed.  The
       event data is `[key, oldVal, newVal]`.
 
-    **`SrcMap`**
+    **`SrcMap` members**
 
     - `put(k, v)`: associate value `v` with key `k` and return any prior value associated with `k`
     - `remove(k)`: remove the entry associated at key `k`
     - inherits `ObsMap`
 
-    **`DepMap`**
+    **`DepMap` members**
 
     - inherits `ObsMap`
 
-    **`Ev`**
+    **`Ev` members**
 
     - `sub(listener)`: subscribes a listener function for events from this
       event node and returns a unique ID for this subscription, which can be used
