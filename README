@@ -1,0 +1,7 @@
+On new release:
+
+- make cdnjs pull request
+- update change log
+- update front page download links, version, size
+- update cdnjs link in quickstart, tutorial, jsfiddles
+- update infelicities (if any fixed) and other documentation
