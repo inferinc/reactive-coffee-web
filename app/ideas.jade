@@ -6,34 +6,6 @@ block content
     Ideas
     =====
 
-    ## Dirty-Tracking Re-Rendering Analysis
-
-    The fine-grained control over re-rendering and bindings is powerful, but for
-    bindings that are non-performance-critical or don't need to scale, it's less
-    effort to not have to selectively decide where those bindings exist.  Simply
-    make everything dynamically bound, and then with events being used only to
-    determine what parts of the model have been dirtied, we can instead let the
-    framework compute optimal set(s) of the DOM to re-render automatically.
-
-    Once everything is a binding, slightly modified/more scalable syntax and idioms
-    may be warranted, so that instead of:
-
-    ```coffeescript
-    ul {class: (bind -> "biglist"), style: (bind -> "display: #{shown}")}, xs.map (x) ->
-      li {}, bind -> ["#{x.name}"]
-    ```
-
-    we write:
-
-    ```coffeescript
-    ul {
-      class: -> "biglist"
-      style: -> "display: #{shown}"
-      contents: xs.map (x) ->
-        li { contents: -> ["#{x.name}"] }
-    }
-    ```
-
     ## Object.observe
 
     A platform feature looming on the horizon of ECMAScript is that of
@@ -66,12 +38,40 @@ block content
     widely supported feature (only available in Chrome Canary) and the framework
     has a more expensive fallback.
 
-    ## DOM-Diff Re-Rendering Analysis
+    ## Dirty-Tracking Re-Rendering Analysis
 
-    Throw away all observables and bindings, and re-build the entire view on every
+    The fine-grained control over re-rendering and bindings is powerful, but for
+    bindings that are non-performance-critical or don't need to scale, it's less
+    effort to not have to selectively decide where those bindings exist.  Simply
+    make everything dynamically bound, and then with events being used only to
+    determine what parts of the model have been dirtied, we can instead let the
+    framework compute optimal set(s) of the DOM to re-render automatically.
+
+    Once everything is a binding, slightly modified/more scalable syntax and idioms
+    may be warranted, so that instead of:
+
+    ```coffeescript
+    ul {class: (bind -> "biglist"), style: (bind -> "display: #{shown}")}, xs.map (x) ->
+      li {}, bind -> ["#{x.name}"]
+    ```
+
+    we write:
+
+    ```coffeescript
+    ul {
+      class: -> "biglist"
+      style: -> "display: #{shown}"
+      contents: xs.map (x) ->
+        li { contents: -> ["#{x.name}"] }
+    }
+    ```
+
+    A related idea for even simpler applications is to
+    throw away all observables and bindings, and re-build the entire view on every
     change to the model via an API that mirrors `rxt` except for returning
-    lightweight DOM representations.  By computing the diff between
-    representations, the actual DOM operations can be computed.
+    lightweight DOM representations.  By computing the diff between DOM
+    representations (rather than tracking dirtiness of bindings), the actual
+    DOM operations can be determined.
 
     ## Network Data Bindings
 
