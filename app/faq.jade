@@ -105,12 +105,10 @@ block content
 
     **Can I use this from JavaScript?**
 
-    Yes, you can, with caveats.  The main benefit of using CoffeeScript here is
-    that it has a very friendly syntax for declaring UIs and particularly for the
-    terse anonymous function syntax to represent the incrementally recomputable
-    bindings.  However, if you are willing to drop down to the granularity of whole
-    components and let the system diff changes for you, then it's certainly much
-    more pragmatic (this would then be similar to the approach used in React).
+    Yes, you can.  The main benefit of using CoffeeScript here is that it has a
+    very DSL-friendly syntax for Reactive's declarative UIs, and particularly
+    for the terse anonymous function syntax to represent the incrementally
+    recomputable bindings.  Otherwise, it's pretty similar.
 
     It's worth showing a quick example of what that would look like:
 
