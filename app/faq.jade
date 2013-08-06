@@ -12,7 +12,7 @@ block content
 
     **How does Reactive stack up against the many other client-side frameworks?**
 
-    See [Related Work](related.html).
+    See [Related Work].
 
     **Isn't this approach just reverting back to the PHP days of mixing markup
     and logic?**
@@ -81,6 +81,13 @@ block content
     that are unwanted (mis-matched programming model, larger API surface area,
     etc.).
 
+    **Why did you choose to use `rx` as the namespace?  You know about Reactive
+    Extensions, right?**
+
+    Yes, it's cited in the list of [Related Work].  We chose `rx` because short
+    namespaces are convenient and it's unlikely you're using RxJS if you're
+    using reactive.coffee, but please correct us if we're wrong.
+
     **Do I need to sprinkle `rx.cell()` everywhere in my model?**
 
     You actually don't.  At one extreme, you can always fall back to just wrapping
@@ -125,3 +132,5 @@ block content
       ])
     });
     ```
+
+    [Related Work]: related.html
