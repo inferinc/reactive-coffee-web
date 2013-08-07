@@ -48,7 +48,9 @@ block body
       directly to the [tutorial].
 
       ```coffeescript
-      # This is our core data model, an array of Task objects.
+      # This is our application's core data model, an array of Task objects.
+      # `cell` and `array` are our primitive reactive data structures.  You can
+      # listen for (and react to) changes to their values.
 
       class Task
         constructor: (descrip, priority, isDone) ->
@@ -62,8 +64,14 @@ block body
         new Task('Walk the dog', 'meh', false)
       ])
 
-      # Our main view: a checklist of tasks, a button to add a new task, and a task
-      # editor component (defined further down).
+      # Our main view: a checklist of tasks, a button to add a new task, and a
+      # task editor component (defined further down).
+      #
+      # `bind` (and `array.map`) are the central mechanisms by which you can
+      # declare cells that are always bound to the current value of some
+      # expression over other cells.  `z = bind -> x.get() + y.get()` says `z`
+      # should always reflect the sum even as `x` and `y` change.  Subscription
+      # management is handled automatically.
 
       main = ->
         currentTask = rx.cell(tasks.at(0)) # "View model" of currently selected task
@@ -72,7 +80,7 @@ block body
           div {class: 'task-manager'}, [
             h1 bind -> "#{tasks.length()} task(s) for today"
             ul {class: 'tasks'}, tasks.map (task) ->
-              li {class: 'task'}, [
+              li {class: bind -> "task-#{if task == currentTask.get() then 'selected' else 'unselected'}"}, [
                 input {type: 'checkbox', click: -> task.isDone.set(@is(':checked')); true}
                 span {class: 'descrip'}, bind ->
                   "#{task.descrip.get()} (#{task.priority.get()})"
@@ -89,6 +97,8 @@ block body
         )
 
       # The task editor demonstrates how to define a simple component.
+      # Reusable components, encapsulating both view and behavior, are key to
+      # application scalability.
 
       taskEditor = (opts) ->
         task = -> opts.task.get()
@@ -105,6 +115,11 @@ block body
           br()
           button 'Update'
         ]
+        # Here we are munging the strings a bit before updating the model.  The
+        # displayed text will instantly reflect the munged data (try
+        # appending/prepending spaces).  We could've also made this a `submit`
+        # property on the `form` element above; the point is that these are
+        # normal jQuery objects that you can flexibly manipulate.
         theForm.submit ->
           opts.onSubmit(descrip.val().trim(), priority.val().trim())
           false
