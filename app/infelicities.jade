@@ -9,7 +9,7 @@ block content
     There are a number of areas for immediate improvement, including but not
     limited to the following:
 
-    ## Lazy change propagation
+    ## Lazy Change Propagation
 
     This one is rather low-hanging fruit: when a cell's value has been set to the
     same value, we should not propagate events downstream to dependent nodes.
@@ -20,6 +20,12 @@ block content
     certain attributes such as `style`, we could have a simple convenience
     preprocessor that takes in an object map of the style names and renders the
     string.  This could be extended to lists for `class` and so on.
+
+    ## More Combinators
+
+    There are only a few combinators right now.  Besides `map`, we also are
+    interested in adding (efficient implementations of) `filter`, `sort`,
+    `fold`/`reduce`, etc.
 
     ## Topologically Ordered Visits
 
@@ -82,7 +88,8 @@ block content
     re-evaluation, these inner `bind`s should be _disposed_ of, unsubscribing
     themselves from all their dependencies (thus dependency tracking is a
     pre-requisite).  This disposal should also occur recursively down to
-    *their* nested `bind`s, and so on.
+    *their* nested `bind`s, and so on.  Languages with weak references have an
+    easier time about this.
 
     ## Lazy Event Notification
 
