@@ -107,7 +107,6 @@ block body
         ]
         theForm.submit ->
           opts.onSubmit(descrip.val().trim(), priority.val().trim())
-          @reset()
           false
 
       $(main)
