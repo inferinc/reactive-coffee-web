@@ -1,0 +1,25 @@
+doctype 5
+html
+  head
+    title Nodes
+  body
+    //svg#viz(width=1600, height=500, fill='black', style='background: #3b4247')
+      defs
+        circle#node-1(cx=0, cy=0, r=50, fill='black')
+        mask#comp-1
+          rect(x=50, y=50, width=100, height=100, fill='white')
+          use(x=50, y=50, xlink:href='#node-1')
+      g()
+        line(x1=0, y1=0, x2=999, y2=999, stroke='green', mask='url(#comp-1)')
+        rect(x=50, y=50, width=99, height=99, fill='green')
+    //svg#viz(width=1600, height=500, fill='black', style='background: #3b4247')
+    //svg#viz(width=1600, height=500, fill='black', style='background: #3e484a')
+    //svg#viz(width=1600, height=500, fill='black', style='background: #ec8500')
+    //svg#viz(width=1600, height=500, fill='black', style='background: #e67c00')
+    //svg#viz(width=1600, height=500, fill='black', style='background: #ec8500')
+    svg#viz(width=1600, height=500, fill='black', style='background: white')
+      defs
+    script(src='bower_components/d3/d3.min.js')
+    script(src='bower_components/underscore/underscore.js')
+    script(src='random-js/random.js')
+    script(src='main.js')
