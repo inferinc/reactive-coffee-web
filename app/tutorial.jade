@@ -666,7 +666,8 @@ block content
     ```
 
     The key for these situations is that `bind`s should go all the way to the
-    top, or else you'll want to manually disconnect your (top-level) binds:
+    top, or else you'll want to manually disconnect your (top-level) binds
+    using their `disconnect` method:
 
     ```coffeescript
     showing = false
