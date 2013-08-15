@@ -114,9 +114,10 @@ block content
 
     ## Dependent Cells
 
-    The above is a simple way of updating but it's a bit verbose.  In most UI
-    frameworks, you have fewer models but many more visual representations of the
-    model.
+    The above is a simple way of observing and responding to events on cells,
+    but it's a bit verbose.  In most UIs, you really just want to be able to
+    declaratively express your views in terms of a model (data binding), rather
+    than explicitly manage listeners.
 
     To extend the above example, let's say you now had a displayed name that
     depended on two cells (comprising your "model").  You could just create
