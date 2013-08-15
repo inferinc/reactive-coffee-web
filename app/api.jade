@@ -55,6 +55,9 @@ block content
     **`DepCell` members**
 
     - inherits `ObsCell`
+    - `disconnect`: unsubscribes this cell from its dependencies and
+      recursively disconnects all nested binds; useful for manual disposal of
+      `bind`s
 
     **`ObsArray` members**
 
