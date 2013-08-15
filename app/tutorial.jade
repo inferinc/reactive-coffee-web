@@ -606,3 +606,79 @@ block content
     We are using three different types of reactive element attributes.
     `rx(property)` returns the value of the given property (`focused`,
     `checked`, `val`) as a cell.
+
+    ## Garbage Collection
+
+    Dependencies hold references to their dependents in order to know who to
+    propagate updates to.  We do currently unsubscribe a dependent observable
+    from its dependencies whenever that dependent is refreshed, but if the
+    dependent observable itself creates nested binds, those nested binds must
+    also be disconnected, and so on, recursively.
+
+    For instance, say we have:
+
+    ```coffeescript
+    showUnread = rx.cell(true)
+    unread = rx.cell(0)
+    div {class: 'scoreboard'}, bind -> [
+      if showUnread.get()
+        div {class: 'unread'}, bind -> "#{unread.get()} message(s)"
+      else
+        '(nothing shown)'
+    ]
+    ```
+
+    Initially, `unread` has a subscriber, as expected: the inner `bind`.  When
+    we update `showUnread`, the outer `bind` will re-evaluate and create a new
+    inner `bind` (for the nested `div`), completely forgetting about the old
+    one.  Without the nested bind cleanup, `unread` now has *two* subscribers,
+    old and new inner `bind`s.  And since the old inner `bind` is still
+    referenced from `unread`'s list of subscribers, it can't be
+    garbage-collected.  Ergo, memory leak.
+
+    What instead happens: `bind` tracks any nested `bind`s.  On re-evaluation,
+    these inner `bind`s are _disconnected_, unsubscribing themselves from all
+    their dependencies.  This disconnection also occurs recursively down to
+    *their* nested `bind`s, and so on.
+
+    One question is what happens at the top level or when you want to break out
+    and do your own thing. We don't have the luxury of weak refs in JS, and as
+    a result it's less forgiving if you do "silly" things like create binds
+    that go nowhere and that you don't want to keep.
+
+    (But even with weak references, one can't tell if you added a bind only to
+    subscribe a console.log caller to its changes, save to localStorage, or
+    some other side effect that you *do* want to keep.)
+
+    For instance, you don't want to write the above as the following:
+
+    ```coffeescript
+    showing = false
+    $('.toggle-button').click ->
+      if showing
+        $('.scoreboard').html(
+          div {class: 'unread'}, bind -> "#{unread.get()} message(s)"
+        )
+      else
+        $('.scoreboard').text('(nothing shown)')
+      showing = not showing
+    }
+    ```
+
+    The key for these situations is that `bind`s should go all the way to the
+    top, or else you'll want to manually disconnect your (top-level) binds:
+
+    ```coffeescript
+    showing = false
+    topBind = null
+    $('.toggle-button').click ->
+      if showing
+        $('.scoreboard').html(
+          div {class: 'unread'}, topBind = bind -> "#{unread.get()} message(s)"
+        )
+      else
+        $('.scoreboard').text('(nothing shown)')
+        topBind.disconnect()
+      showing = not showing
+    }
+    ```

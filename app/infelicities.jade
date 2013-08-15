@@ -55,42 +55,6 @@ block content
 
     This guarantees avoiding multiple visits to the same node.
 
-    ## Garbage Collection
-
-    Dependencies hold references to their dependents in order to know who to
-    propagate updates to.  We do currently unsubscribe a dependent observable
-    from its dependencies whenever that dependent is refreshed, but if the
-    dependent observable itself creates nested binds, those nested binds may
-    not be cleaned up.
-
-    For instance, say we have:
-
-    ```coffeescript
-    showUnread = rx.cell(true)
-    unread = rx.cell(0)
-    div {class: 'scoreboard'}, bind -> [
-      if showUnread.get()
-        div {class: 'unread'}, bind -> "#{unread.get()} message(s)"
-      else
-        '(nothing shown)'
-    ]
-    ```
-
-    Initially, `unread` has a subscriber, as expected: the inner `bind`.  When
-    we update `showUnread`, the outer `bind` will re-evaluate and create a new
-    inner `bind` (for the nested `div`), completely forgetting about the old
-    one.  However, now `unread` has *two* subscribers, old and new inner
-    `bind`s.  And since the old inner `bind` is still referenced from
-    `unread`'s list of subscribers, it can't be garbage-collected.  Ergo,
-    memory leak.
-
-    What needs to happen: `bind` should track any nested `bind`s.  On
-    re-evaluation, these inner `bind`s should be _disposed_ of, unsubscribing
-    themselves from all their dependencies (thus dependency tracking is a
-    pre-requisite).  This disposal should also occur recursively down to
-    *their* nested `bind`s, and so on.  Languages with weak references have an
-    easier time about this.
-
     ## Lazy Event Notification
 
     More flexible-but-still-efficient array (and other data structure) mutations.
