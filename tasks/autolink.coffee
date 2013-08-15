@@ -22,7 +22,7 @@ module.exports = (grunt) ->
               if _(filepath).endsWith($(link).attr('href'))
                 toc = $('<ul/>').addClass('toc')
                 for hdr in $('#main-content h2').map((i,x) -> $(x))
-                  anchor = hdr.text().replace(/\W/, '-').toLowerCase()
+                  anchor = hdr.text().replace(/\W/g, '-').toLowerCase()
                   anchors.push(anchor)
                   toc.append(
                     $('<li/>').append(
