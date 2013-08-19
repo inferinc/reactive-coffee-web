@@ -9,31 +9,6 @@ block content
     There are a number of areas for immediate improvement, including but not
     limited to the following:
 
-    ## ES5 Properties
-
-    Currently cells and other observable data structures are plain classes,
-    with explicit getter/setter method calls.  To make working with observables
-    more natural/less verbose as well as more similar to working with regular
-    non-observable data structures, we can use [ES5 object property
-    getter/setters][ES5 properties], so that what used to be:
-
-    ```coffeescript
-    card = cards.at(cards.length() - 1)
-    card.isFlipped.set(not card.isFlipped.get())
-    ```
-
-    becomes:
-
-    ```coffeescript
-    card = cards[cards.length - 1]
-    card.isFlipped = not card.isFlipped
-    ```
-
-    Thanks to [@m1sta](https://github.com/yang/reactive-coffee/issues/6) for
-    bringing this idea to the table.
-
-    [ES5 properties]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
-
     ## Alternative Syntax Support
 
     Although there should be a single encouraged syntax so as to facilitate

@@ -683,3 +683,81 @@ block content
       showing = not showing
     }
     ```
+
+    ## ES5 Properties
+
+    So far, everything is built on observable data structures, which are just
+    plain classes with explicit getter/setter calls.  To make working with
+    observables more natural/less verbose as well as more similar to working
+    with regular non-observable data structures, we can use [ES5 object
+    property getters/setters][ES5 properties], so that what used to be:
+
+    ```coffeescript
+    card = deck.cards.at(deck.cards.length() - 1)
+    card.isFlipped.set(not card.isFlipped.get())
+    ```
+
+    becomes:
+
+    ```coffeescript
+    card = deck.cards[deck.cards.length - 1]
+    card.isFlipped = not card.isFlipped
+    ```
+
+    Your class definitions are simpler as well.  You can rewrite this:
+
+    ```coffeescript
+    class Deck
+      constructor: (player, cards) ->
+        @player = rx.cell(player)
+        @cards = rx.array(cards)
+    class Card
+      constructor: (suit, rank, isFlipped) ->
+        @suit = rx.cell(suit)
+        @rank = rx.cell(rank)
+        @isFlipped = rx.cell(isFlipped)
+    ```
+
+    as:
+
+    ```coffeescript
+    class Deck
+      constructor: (@player, @cards) ->
+        rx.autoReactify(this)
+    class Card
+      constructor: (@suit, @rank, @isFlipped) ->
+        rx.autoReactify(this)
+    ```
+
+    In short, you can construct "plain" objects, then `autoReactify` them, which
+    replaces all fields with ES5 getters/setters (coupled with hidden backing
+    observable cells/arrays).
+
+    However, there are a few caveats and limitations, primarily around arrays.
+    Arrays are implemented by actually replacing the methods on normal Arrays
+    with wrappers that also call the appropriate method on the observable.
+    However, there is no way to override the indexing/subscript operator `[]`
+    in JS.  As a result, normal indexing operations may be less efficient (this
+    will likely be fine for most arrays/binds in your application, however, unless
+    they're really big):
+
+    ```coffeescript
+    deck.player # translates into deck.player.get()
+    deck.cards # translates into deck.cards.all()
+    deck.cards[0] # translates into deck.cards.all()[0], not deck.cards.at(0)
+    deck.cards.length # translates into deck.cards.all().length
+
+    # so, these won't work react to changes
+    cards = deck.cards
+    bind -> cards[0]
+    bind -> cards.length
+
+    # instead, always access as a field:
+    bind -> deck.cards[0]
+    bind -> deck.cards.length
+    ```
+
+    Thanks to [@m1sta](https://github.com/yang/reactive-coffee/issues/6) for
+    bringing this idea to the table.
+
+    [ES5 properties]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
