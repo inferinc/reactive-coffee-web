@@ -512,6 +512,23 @@ block content
     Nested `bind`/`map` calls are insulated from outer calls, re-rendering only
     what's necessary.
 
+    Sometimes you will want to append an observable array after some element.
+    Or you may want to make one element among a set conditionally rendered.
+    For these situations, there's a handy `rx.flatten` utility function:
+
+    ```coffeescript
+    div {}, rx.flatten [
+      h1 {}, 'Header'
+      headerItems.map (item) -> ...
+      separator if showSeparator.get()
+      h1 {}, 'Footer'
+      footerItems.map (item) -> ...
+    ]
+    ```
+
+    (These behaviors may be folded into core `rxt` behavior if it proves to be
+    a sensible default.)
+
     ## Components
 
     Making reusable components is as simple as defining a function:
