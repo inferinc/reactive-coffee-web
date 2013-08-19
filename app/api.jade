@@ -62,7 +62,10 @@ block content
     **`ObsArray` members**
 
     - `at(i)`: return element at `i`
-    - `all()`: return raw array copy of all elements
+    - `all()`: return array copy of all elements
+    - `raw()`: return raw array of all elements; this is unsafe since mutations
+      will violate the encapsulated invariants, but serves as a performance
+      escape hatch around `all()`
     - `length()`: return size of the array
     - `map(fn)`: return `DepArray` of given function mapped over this array
     - `onChange`: the event that is fired after any part of the array is
