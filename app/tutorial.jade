@@ -580,6 +580,35 @@ block content
     propagation, whereas you cannot later reintroduce dynamism into places with no
     dynamic bindings.
 
+    ## Side Effects and Resource Cleanup
+
+    Sometimes you will have side effects associated with certain `bind`s or
+    components, such as establishing a connection or setting an interval timer:
+
+    ```coffeescript
+    blinkingBox = (opts) ->
+      active =  rx.cell false
+      setInterval (-> active.set not active.get()), opts.ms ? 500
+      div {class: bind -> if active.get() then 'red-box' else 'black-box'}
+
+    $('body').append(
+      div {class: 'container'}, boxes.map -> blinkingBox()
+    )
+    ```
+
+    In these cases, you'll want to do proper resource management/cleanup
+    whenever the `bind` context is removed or refreshed—in this case, stopping
+    the interval timer.  For these situations, you can use
+    `rx.onDispose(callback)`:
+
+    ```coffeescript
+    blinkingBox = (opts) ->
+      active =  rx.cell false
+      interval = setInterval (-> active.set not active.get()), opts.ms ? 500
+      rx.onDispose -> clearInterval(interval)
+      div {class: bind -> if active.get() then 'red-box' else 'black-box'}
+    ```
+
     ## Binding To DOM Element Attributes
 
     We can treat certain interactive DOM elements' attributes as cells, thus
