@@ -108,3 +108,56 @@ block content
       showing = not showing
     }
     ```
+
+    ## Mutations Inside Binds
+
+    Say you had some dependent cell:
+
+    ```coffeescript
+    plusOne = bind -> src.get() + 1
+    ```
+
+    If you try something like the following, i.e. explicitly wire up a
+    dependent cell to modify a source cell:
+
+    ```coffeescript
+    bind ->
+      x = plusOne.get()
+      dst.set(val)
+    src.set(2)
+    ```
+
+    you'll get a warning that you're trying to perform a cell-mutating
+    operation within the subgraph of a dependent cell.
+
+    This is discouraged because a well-structured program should exhibit a
+    clean DAG of dependencies.  When you do something like this, you're
+    potentially creating cycles.  It also muddies what `dst` *should* reflect,
+    when you have multiple bind locations calling `dst.set(...)`—it's often
+    clearer to express the value of `dst` as some expression of its
+    dependencies.
+
+    Usually you'll instead want to have `dst` be a dependent cell of `plusOne`
+    rather than be its own `SrcCell`:
+
+    ```coffeescript
+    dst = bind -> plusOne.get()
+    ```
+
+    However, in case you need an escape hatch in a bind (har har), you can wrap
+    some mutation code in `rx.allowMutations` to suppress the warnings:
+
+    ```coffeescript
+    plusOne = bind ->
+      rx.allowMutations ->
+        x = src.get() + 1
+        dst.set(x)
+    ```
+
+    Note that downstream `bind`s triggered by the `.set()` will not be
+    considered a nested bind of the current bind context.  The two are
+    considered disconnected and unrelated—otherwise you get unintuitive
+    behaviors resulting from routine disposals on downstream refreshes.
+
+    Any other nested binds inside `allowMutations` will see the warnings again
+    if they attempt to mutate observables.
