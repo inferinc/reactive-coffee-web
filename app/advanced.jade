@@ -161,3 +161,18 @@ block content
 
     Any other nested binds inside `allowMutations` will see the warnings again
     if they attempt to mutate observables.
+
+    Note: currently the warning is only detected in `bind` calls—you can also
+    escape with manual event subscriptions:
+
+    ```coffeescript
+    src.onSet.sub ([old, val]) -> dst.set(val)
+    ```
+
+    However, you must manage your subscription, so if this is happening
+    within some bind context, you must also unsubscribe on context disposal:
+
+    ```coffeescript
+    uid = src.onSet.sub ([old, val]) -> dst.set(val)
+    rx.onDispose -> src.onSet.unsub(uid)
+    ```
