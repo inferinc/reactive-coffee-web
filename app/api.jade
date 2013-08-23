@@ -32,11 +32,15 @@ block content
       defaults to `undefined`)
     - `array(value)`: return a `SrcArray` initialized to the given array (optional;
       defaults to `[]`)
-    - `bind(fn)`: given a 0-ary function, return a `DepCell` whose value is the
+    - `bind(fn)`: given a 0-ary function, return a `DepCell` whose value is
       bound to the result of evaluating that function.  The function is immediately
       evaluated once, and each time it's evaluated, for any accesses of
       observables, the `DepCell` subscribes to the corresponding events, which may
       subsequently trigger future re-evaluations.
+    - `snap(fn)`: given a 0-ary function, return a `DepCell` whose value is the
+      result of immediately evaluating that function *just once*.  The function
+      does not subscribe to any observables contained therein.  This also
+      shields the current context from subscribing to the function as well.
     - `lagBind(init, fn)`: same as `bind` but waits a 500ms delay after getting an
       update before the `DepCell` updates itself (yes, this needs to be a
       configurable parameter)

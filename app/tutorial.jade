@@ -510,7 +510,20 @@ block content
     ```
 
     Nested `bind`/`map` calls are insulated from outer calls, re-rendering only
-    what's necessary.
+    what's necessary.  As an escape hatch, to insulate something from the
+    current bind context and *not* subscribe to any dependencies therein, you
+    can use `rx.snap`, which also returns a `DepCell`; this is evaluated only
+    once:
+
+    ```coffeescript
+    div {class: 'editor'}, bind -> [
+      input {type: 'text', value: snap -> x.get()}
+    ]
+    ```
+
+    Without the `snap`, anytime `x` changes, the entire `div` would be
+    re-rendered, but with a `bind`, the text box's contents would be
+    re-rendered.  `snap` is the "anti-`bind`".
 
     Sometimes you will want to append an observable array after some element.
     Or you may want to make one element among a set conditionally rendered.
