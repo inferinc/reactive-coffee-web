@@ -1,3 +1,27 @@
+Setup
+=====
+
+Run:
+
+    npm install -g grunt-cli
+    npm install
+    rbenv install
+    bundle
+
+Builds
+======
+
+Run:
+
+    grunt
+
+To test/iterate with a live-reload server:
+
+    grunt server
+
+Releases
+========
+
 On new release:
 
 - make cdnjs pull request
