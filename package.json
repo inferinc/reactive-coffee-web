@@ -30,7 +30,8 @@
     "coffee-script": "~1.6.3",
     "sync": "~0.2.2",
     "cheerio": "~0.12.0",
-    "grunt-sitemap": "~0.1.0"
+    "grunt-sitemap": "~0.1.0",
+    "marked": "~0.2.9"
   },
   "engines": {
     "node": ">=0.8.0"
