@@ -41,9 +41,21 @@ block content
       result of immediately evaluating that function *just once*.  The function
       does not subscribe to any observables contained therein.  This also
       shields the current context from subscribing to the function as well.
-    - `lagBind(init, fn)`: same as `bind` but waits a 500ms delay after getting an
-      update before the `DepCell` updates itself (yes, this needs to be a
-      configurable parameter)
+    - `asyncBind(init, fn)`: create an asynchronous bind.  The given `fn` is
+      expected to call `this.record(f)` up to at most one time at some point
+      during its potentially asynchronous duration before calling
+      `this.done(result)`.  The call to `this.record(f)` evaluates `f` while
+      recording the implicit subscriptions triggered by accesses to
+      observables.  The cell's initial value is `init`.
+    - `lagBind(lag, init, fn)`: same as `bind` but waits a 500ms delay after
+      a dependency changes (or after initialization) before the `DepCell`
+      refreshes.  For the first 500ms, the cell's value is `init`; you can set
+      this to e.g. `noSub(fn)` if you want to immediately populate it with the
+      result of evaluating your given `fn`.
+    - `postLagBind(init, fn)`: immediately evaluates `fn`, which is expected to
+      return a `{val, ms}`, where `ms` indicates how long to wait before
+      publishing `val` as the new value of this `DepCell`.  Until the first
+      published value, the cell is initialized to `init`.
     - `reactify(obj, spec)`: mutates an object to replace the specified fields
       with getters/setters powered by an observable cell/array, and returns the
       object.  `spec` is a mapping from field name to `{type, val}`, where

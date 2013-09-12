@@ -176,3 +176,63 @@ block content
     uid = src.onSet.sub ([old, val]) -> dst.set(val)
     rx.onDispose -> src.onSet.unsub(uid)
     ```
+
+    ## Asynchronous Binds
+
+    So far we've seen _synchronous_ binds.  However, let's say you want to have
+    introduce a delay between when a bind's dependencies are updated and when
+    that bind is evaluated.  This can be useful, for instance, if you have an
+    expensive bind over some dependencies, where the dependencies can change in
+    bursts of high frequency, and you don't want the app to block on
+    re-evaluating the bind every time the dependencies change.  Similarly, you
+    may want a UI component to update in response to the user entering text
+    into a text box, but you don't want a jarring user experience and want to
+    instead only update the UI once the user stops typing for some time.
+
+    There is in fact a `lagBind`:
+
+    ```coffeescript
+    y = rx.lagBind 500, 0, -> expensiveFunction(x.get())
+    ```
+
+    Here, `y` isn't immediately evaluated every time `x` changes; rather, `y`
+    (which is initialized to 0) waits for `x` to settle down for at least half
+    a second before evaluating the expensive function of `x`.
+
+    There's also a similar function, `postLagBind`, contributed by
+    [@eizenberg], which instead introduces a lag but *after* the function
+    evaluation (which is immediate upon).  This allows you to specify a dynamic
+    delay as part of the result.  In this example, the tootip appears
+    instantly, but disappears only after a delay:
+
+    ```coffeescript
+    showTooltip = rx.postLagBind false, ->
+      if focused.get() and showTooltips.get() then val: true, ms: 0
+      else val: false, ms: 300
+    ```
+
+    More generally, you can implement your own asynchronous binds (which
+    `bind`, `lagBind`, and `postLagBind`) are all expressed in terms of
+    `asyncBind`.  You supply a function that runs the asynchronous
+    lifecycle.  At a single point in the lifecycle, you can call
+    `this.record(f)`, passing it a function which will record and subscribe to
+    dependencies.  This can be called only once; otherwise things like disposal
+    of prior subscriptions gets very complex and multiple in-flight lifecycles
+    gets more complex (if you need multiple stages of bindings separated by
+    asynchronous gaps, you can use a chain of multiple asynchronous binds).
+    Upon completion, `this.done(x)` must be called with the result.
+
+    Here's an example that immediately evaluates/records its dependencies and
+    then feeds that to an AJAX call; upon completion, the result is passed into
+    `@done`.
+
+    ```coffeescript
+    y = rx.asyncBind 0, ->
+      input = @record -> x.get()
+      ajaxCall({data: input, done: (output) => @done(output)})
+    ```
+
+    Users interested in `asyncBind` are also encouraged to take a look at the
+    (very short) implementations of `bind`, `lagBind`, and `postLagBind`.
+
+    [@eizenberg]: https://github.com/eizenberg
