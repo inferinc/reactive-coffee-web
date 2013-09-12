@@ -16,6 +16,8 @@ block content
     - Resurrent `rx.lagBind`.
     - Add `rx.postLagBind` for dynamic delayed async binds.
     - Add `rx.onDispose` for [resource cleanup].
+    - Add and use `rx.autoSub` for proper cleanup of explicit subscriptions
+      within `bind`s.
     - Add `rx.snap` for non-binding snapshots.
     - Add `rx.skipFirst` for suppressing initial invocations.
     - Add utility functions: `rx.flatten`, `rxt.cast`, `rxt.cssify`.
