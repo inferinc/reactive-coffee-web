@@ -519,10 +519,9 @@ block content
     ```
 
     Nested `bind`/`map` calls are insulated from outer calls, re-rendering only
-    what's necessary.  As an escape hatch, to insulate something from the
+    what's necessary.  As an escape hatch, to insulate some code `fn` from the
     current bind context and *not* subscribe to any dependencies therein, you
-    can use `rx.snap`, which also returns a `DepCell`; this is evaluated only
-    once:
+    can use `rx.snap(fn)`.  This is evaluated only once:
 
     ```coffeescript
     div {class: 'editor'}, bind -> [

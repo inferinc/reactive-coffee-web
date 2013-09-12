@@ -37,10 +37,9 @@ block content
       evaluated once, and each time it's evaluated, for any accesses of
       observables, the `DepCell` subscribes to the corresponding events, which may
       subsequently trigger future re-evaluations.
-    - `snap(fn)`: given a 0-ary function, return a `DepCell` whose value is the
-      result of immediately evaluating that function *just once*.  The function
-      does not subscribe to any observables contained therein.  This also
-      shields the current context from subscribing to the function as well.
+    - `snap(fn)`: evaluate the given 0-ary function while insulating it from
+      the enclosing bind.  This will be evaluated *just once* and prevents
+      subscriptions to any observables contained therein.
     - `asyncBind(init, fn)`: create an asynchronous bind.  The given `fn` is
       expected to call `this.record(f)` up to at most one time at some point
       during its potentially asynchronous duration before calling
