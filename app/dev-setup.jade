@@ -31,3 +31,10 @@ block content
 
     You can ignore this; it was a Karma bug, fixed recently in
     <https://github.com/karma-runner/karma/issues/444>.
+
+    Before making commits, please set up the commit-hook:
+
+        ln -s $PWD/tools/pre-commit .git/hooks/
+
+    This ensures that `dist/` has the latest compiled sources (and consequently
+    that everything passes tests).
