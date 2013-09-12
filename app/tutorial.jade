@@ -558,10 +558,20 @@ block content
     unwieldy set of parameters:
 
     ```coffeescript
+    #
+    # tabs: array of tab contents, where each tab content is itself an array of
+    #   elements or text
+    # initialTabIndex: index of initial tab; defaults to 0
+    # activeClass: class to set an active tab; defaults to 'active-tab'
+    # change: a callback that is called whenever the active tab is changed,
+    #   and is passed the new active tab index
+    #
+
     tabs = (opts) ->
       opts = _(opts).defaults
         initialTabIndex: 0
         activeClass: 'active-tab'
+        change: ->
       opts = rxt.cast opts,
         tabs: 'array'
 
@@ -575,7 +585,9 @@ block content
                 "nav-tab"
                 "#{if activeTabIndex.get() == i then opts.activeClass else ''}"
               ].join(' ')
-            click: -> activeTabIndex.set(i)
+            click: ->
+              activeTabIndex.set(i)
+              opts.change(i)
           }, [tabName]
         div {class: 'tab-content'}, bind ->
           [tabName, tabContents] = opts.tabs.at(activeTabIndex.get())
