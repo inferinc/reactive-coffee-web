@@ -6,14 +6,20 @@ block content
     Change Log
     ==========
 
+    Changes for each version are roughly listed in order of descending
+    noteworthiness.
+
     **v0.0.5 – under development**
 
     - Add support for [ES5 property getter/setters][ES5].
-    - Add `rx.snap` for non-binding snapshots.
+    - Add [asynchronous bind] support and `asyncBind`.
+    - Resurrent `rx.lagBind`.
+    - Add `rx.postLagBind` for dynamic delayed async binds.
     - Add `rx.onDispose` for [resource cleanup].
-    - Add `rx.allowMutations` to [tie a source cell to a dependent
-      cell][allowMutations].
-    - Add `rx.flatten` utility function.
+    - Add `rx.snap` for non-binding snapshots.
+    - Add utility functions: `rx.flatten`, `rxt.cast`, `rxt.cssify`.
+
+    [asynchronous bind]: advanced.html#asynchronous-binds
 
     **v0.0.4 – 2013-08-14**
 
