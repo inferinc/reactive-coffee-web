@@ -181,6 +181,15 @@ block content
     a template language, this is generalized to be a generic way of expressing
     arbitrary time-varying data structures.
 
+    When you set a cell to the same value (value doesn't change), the event is
+    not propagated.  This is a useful efficiency boost that assumes/encourages
+    you to think of binds/cells not as reacting to discrete events, but more
+    abstractly as continuous time-varying signals.  In general, your cells are
+    encouraged to be deterministic in their effects, if not [pure functions]
+    altogether.
+
+    [pure functions]: https://en.wikipedia.org/wiki/Pure_function
+
     ## Arrays and Maps
 
     Cells are the most general type of observable container.  However, there are
