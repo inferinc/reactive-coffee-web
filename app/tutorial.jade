@@ -112,6 +112,14 @@ block content
     firstName.set('Jane')
     ```
 
+    Events immediately invoke a newly added listener to bring them up to speed
+    on the current value, but you can suppress this first invocation with the
+    simple `rx.skipFirst` utility function:
+
+    ```coffeescript
+    x.onSet.sub rx.skipFirst ([oldVal, newVal]) -> ...
+    ```
+
     ## Dependent Cells
 
     The above is a simple way of observing and responding to events on cells,
