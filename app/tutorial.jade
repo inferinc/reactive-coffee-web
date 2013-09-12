@@ -552,14 +552,18 @@ block content
 
     ## Components
 
-    Making reusable components is as simple as defining a function:
+    Making reusable components is as simple as defining a function, where the
+    convention is to pass in a single named argument object, as opposed to
+    regular arguments, since components have a tendency to demand a fairly
+    unwieldy set of parameters:
 
     ```coffeescript
     tabs = (opts) ->
       opts = _(opts).defaults
-        tabs: []
         initialTabIndex: 0
         activeClass: 'active-tab'
+      opts = rxt.cast opts,
+        tabs: 'array'
 
       activeTabIndex = rx.cell(opts.initialTabIndex)
 
@@ -578,6 +582,9 @@ block content
           tabContents
       ]
     ```
+
+    Above, we used a convenience function `rxt.cast` which lets us cast inputs
+    to the desired observable data type (cell or array).
 
     Now we can use this with:
 
@@ -598,8 +605,9 @@ block content
 
     When defining abstractions, it's almost always better to err on the side of
     making everything dynamic, since you can always opt-out of dynamism by stopping
-    propagation, whereas you cannot later reintroduce dynamism into places with no
-    dynamic bindings.
+    propagation (e.g. with `snap` or with hoisting things out of a `bind`),
+    whereas you cannot later reintroduce dynamism into places with no dynamic
+    bindings.
 
     ## Binding To DOM Element Attributes
 
