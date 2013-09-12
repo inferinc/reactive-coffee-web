@@ -144,37 +144,30 @@ block content
     dst = bind -> plusOne.get()
     ```
 
-    However, in case you need an escape hatch in a bind (har har), you can wrap
-    some mutation code in `rx.allowMutations` to suppress the warnings:
+    However, in case you need an escape hatch in a bind (har har), you can
+    always set up a manual listener:
 
     ```coffeescript
     plusOne = bind ->
-      rx.allowMutations ->
-        x = src.get() + 1
-        dst.set(x)
+      src.onSet.sub ([old, val]) -> val + 1
+      ...
     ```
 
-    Note that downstream `bind`s triggered by the `.set()` will not be
-    considered a nested bind of the current bind context.  The two are
-    considered disconnected and unrelated—otherwise you get unintuitive
-    behaviors resulting from routine disposals on downstream refreshes.
+    Note that `dst` will not be considered a dependency of `src` or `plusOne`.
+    This connection is unmanaged (or rather, managed by you).
 
-    Any other nested binds inside `allowMutations` will see the warnings again
-    if they attempt to mutate observables.
-
-    Note: currently the warning is only detected in `bind` calls—you can also
-    escape with manual event subscriptions:
-
-    ```coffeescript
-    src.onSet.sub ([old, val]) -> dst.set(val)
-    ```
-
-    However, you must manage your subscription, so if this is happening
-    within some bind context, you must also unsubscribe on context disposal:
+    So if this is happening within some bind context, you must also unsubscribe
+    on context disposal:
 
     ```coffeescript
     uid = src.onSet.sub ([old, val]) -> dst.set(val)
     rx.onDispose -> src.onSet.unsub(uid)
+    ```
+
+    There is a convenience function, `autoSub`, which will take care of this for you:
+
+    ```coffeescript
+    rx.autoSub src.onSet, ([old, val]) -> dst.set(val)
     ```
 
     ## Asynchronous Binds

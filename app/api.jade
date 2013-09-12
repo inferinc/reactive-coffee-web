@@ -72,11 +72,6 @@ block content
       whenever the current (enclosing) bind is removed or refreshed.  This is
       useful for proper resource disposal, such as closing a connection or
       removing an interval timer.
-    - `allowMutations(fn)`: do not warn on mutations within current bind
-      context.  This is an escape hatch which can be useful for tying together
-      nodes that have no dependency relationship, but use this with caution,
-      since you can easily end up with cycles (usually manifesting themselves
-      as stack overflows).
 
     **`ObsCell` members**
 
