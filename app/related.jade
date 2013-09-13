@@ -91,20 +91,23 @@ block content
       way of doing things such as low-level DOM manipulation—something that
       Reactive intentionally delegates to jQuery.
 
-      Performance-wise, React re-constructs a lightweight representation of the
-      entire updated DOM and computes diffs to determine what actual DOM operations
-      to execute.  Programmability-wise, this does lead to some awkward situations
-      involving the predictability of re-rendering and also the control of things
-      such as [element focus].  Performance-wise, the approach is adequate for
-      certain classes of applications, though the process takes on the order of 1ms
-      for simple applications such as TodoMVC.  For other applications performance
-      does unfortunately matter, e.g. for more complex views (such as a web page
-      editor, where not only the controls but the web page itself is rendered as a
-      view) and for when you're trying to produce smooth responses to mouse
-      move/drag events.  It's also more straightforward to interact with the
-      rendered DOM element, as that is the primary representation being worked
-      with.  That said, it would be neat to implement this in Reactive anyway (see
-      "Cell-Free Re-Rendering Analysis" in [Ideas](ideas.html)).
+      React re-constructs a lightweight representation of the entire updated
+      DOM and computes diffs to determine what actual DOM operations to
+      execute.  Programmability-wise, this is not as straightforward as working
+      with the actual DOM objects, requiring some awkward concepts such as
+      refs, and this does lead to some tricky situations involving the
+      predictability of re-rendering and also the control of things such as
+      [element focus].  Performance-wise, the approach is adequate for certain
+      classes of applications, though the process takes on the order of 1ms for
+      simple applications such as TodoMVC.  For other applications performance
+      does unfortunately matter, e.g. for more complex views (such as a web
+      page editor, where not only the controls but the web page DOM itself is
+      rendered as a view) and for when you're trying to produce smooth
+      responses to mouse move/drag events.  It's also more straightforward to
+      interact with the rendered DOM element, as that is the primary
+      representation being worked with.  That said, it would be neat to
+      implement this in Reactive anyway (see "Cell-Free Re-Rendering Analysis"
+      in [Ideas](ideas.html)).
 
       Feel free to dig into our clone of the React tutorial, under
       `examples/react-tut/`.
