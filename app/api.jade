@@ -81,6 +81,8 @@ block content
       if this is called from within a `bind` context, the listener will be
       properly cleaned up (unsubscribed) on context disposal.  Returns the
       subscription ID.
+    - `concat(arrays...)`: returns a dependent array that is the result of
+      concatenating multiple `ObsArray`s (efficiently maintained).
 
     **`ObsCell` members**
 
