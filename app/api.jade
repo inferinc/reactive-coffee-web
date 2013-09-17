@@ -174,9 +174,9 @@ block content
       attributes_ and `children` is an optional list of child elements
       (jQuery-wrapped) and/or strings (for text nodes).  They return an
       instance of the specified element wrapped in a jQuery object.  See also `specialAttrs` below for more on special attributes.
-    - `importTags()`: populate the global namespace with the tag symbols, so you
-      don't need have `rxt` all over your templates.  Useful for quickly throwing
-      something together.
+    - `importTags([dest])`: populate the global namespace (or the `dest` object
+      if given) with the tag symbols, so you don't need have `rxt` all over
+      your templates.  Useful for quickly throwing something together.
     - `rawHtml(html)`: returns a `RawHtml` wrapper for strings that tags won't
       escape when rendering; example: `div {}, [rawHtml('<span>hello</span>')]`
     - `rxt.cast(opts, types)`: convenience utility for use in preparing
