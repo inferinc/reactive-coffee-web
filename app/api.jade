@@ -168,12 +168,15 @@ block content
     **Free functions**
 
     - `mktag(tag)`: returns a tag function of the given tag name.  The various
-      tags like `div` and `h2` are simply aliases; e.g., `div =
-      mktag('div')`.  Tag functions themselves take `(attrs, children)`, where
+      tags like `div` and `h2` are simply aliases; e.g., `div = mktag('div')`.
+      Tag functions themselves take `(attrs, contents)`, both optional, where
       `attrs` is a JavaScript object of HTML attributes and/or _special
-      attributes_ and `children` is an optional list of child elements
-      (jQuery-wrapped) and/or strings (for text nodes).  They return an
-      instance of the specified element wrapped in a jQuery object.  See also `specialAttrs` below for more on special attributes.
+      attributes_ and `contents` is an array (`ObsArray` or regular `Array`) of
+      child nodes (either raw elements, `RawHtml`, or jQuery objects) and/or
+      strings (for text nodes).  You can also pass in a singular such node
+      without the array.  The function returns an instance of the specified
+      element wrapped in a jQuery object.  See also `specialAttrs` below for
+      more on special attributes.
     - `importTags([dest])`: populate the global namespace (or the `dest` object
       if given) with the tag symbols, so you don't need have `rxt` all over
       your templates.  Useful for quickly throwing something together.
