@@ -45,7 +45,9 @@ block content
       during its potentially asynchronous duration before calling
       `this.done(result)`.  The call to `this.record(f)` evaluates `f` while
       recording the implicit subscriptions triggered by accesses to
-      observables.  The cell's initial value is `init`.
+      observables.  (You can call `done` from within `record` but the result
+      won't be set on this cell until after `record` finishes.)  The cell's
+      initial value is `init`.
     - `lagBind(lag, init, fn)`: same as `bind` but waits a 500ms delay after
       a dependency changes (or after initialization) before the `DepCell`
       refreshes.  For the first 500ms, the cell's value is `init`; you can set
