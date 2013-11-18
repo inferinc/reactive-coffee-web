@@ -369,9 +369,11 @@ block content
     `init` was an example of a _special attribute_.  These are just attributes
     that are intercepted and handled differently from others, which are simply
     passed on as regular HTML attributes on the DOM element.  Besides `init`,
-    built-in special attributes include all jQuery events: `click`, `focus`,
-    `mouseleave`, `keyup`, `load`, etc.  So we ould have bound the blur event
-    directly (note it also takes a jQuery object as `this`):
+    built-in special attributes include `style`, which in addition to regular
+    style strings accepts jQuery-style mappings like `{fontSize: 10}`, and all
+    jQuery events: `click`, `focus`, `mouseleave`, `keyup`, `load`, etc.  So
+    we ould have bound the blur event directly (note it also takes a jQuery
+    object as `this`):
 
     ```coffeescript
     ...

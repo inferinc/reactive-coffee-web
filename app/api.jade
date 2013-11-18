@@ -227,6 +227,9 @@ block content
     - `init`: which is a 0-ary function that is run immediately upon
       instantiation of the element.
 
+    - `style`: automatically transforms the given value with `cssify` if it's
+      not a string
+
     - events like `click`, `focus`, `mouseleave`, `keyup`, `load`, etc.,:
       these are available for all jQuery events.  The handlers are similar to
       those you would pass to a jQuery event method—they take a jQuery event
