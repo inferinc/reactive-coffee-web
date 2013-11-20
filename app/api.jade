@@ -58,9 +58,10 @@ block content
       publishing `val` as the new value of this `DepCell`.  Until the first
       published value, the cell is initialized to `init`.
     - `reactify(obj, spec)`: mutates an object to replace the specified fields
-      with getters/setters powered by an observable cell/array, and returns the
-      object.  `spec` is a mapping from field name to `{type, val}`, where
-      `type` is `'array'` or `'cell'` and `val` is an optional initial value.
+      with ES5 getters/setters powered by an observable cell/array, and
+      returns the object.  `spec` is a mapping from field name to `{type,
+      val}`, where `type` is `'array'` or `'cell'` and `val` is an optional
+      initial value.
     - `autoReactify(obj)`: mutates an object to `reactify` all fields
       (specifying `array` for arrays and `cell` for everything else), and
       returns the object
