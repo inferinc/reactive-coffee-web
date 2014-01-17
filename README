@@ -29,3 +29,4 @@ On new release:
 - update front page download links, version, size
 - update cdnjs link in quickstart, tutorial, jsfiddles
 - update infelicities (if any fixed) and other documentation
+- update dependencies (if any change) in the jsfiddles
