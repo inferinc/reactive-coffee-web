@@ -101,11 +101,11 @@ block content
       classes of applications, though the process takes on the order of 1ms for
       simple applications such as TodoMVC.  For other applications performance
       does unfortunately matter, e.g. for more complex views (such as a web
-      page editor, where not only the controls but the web page DOM itself is
-      rendered as a view) and for when you're trying to produce smooth
-      responses to mouse move/drag events.  It's also more straightforward to
-      interact with the rendered DOM element, as that is the primary
-      representation being worked with.  That said, it would be neat to
+      page editor, where not only the controls but the edited web page DOM
+      itself is rendered as the user is typing) and for when you're trying to
+      produce smooth responses to mouse move/drag events.  It's also more
+      straightforward to interact with the rendered DOM element, as that is the
+      primary representation being worked with.  That said, it would be neat to
       implement this in Reactive anyway (see "Cell-Free Re-Rendering Analysis"
       in [Ideas](ideas.html)).
 
