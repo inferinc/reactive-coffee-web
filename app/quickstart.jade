@@ -10,9 +10,9 @@ block content
 
     To follow these examples, you can copy and paste the code into this
     [minimal jsFiddle].
-    
+
     [minimal jsFiddle]: http://jsfiddle.net/yang/fcJxP/
-    
+
     To follow along in your own environment, use the following scaffolding for
     your HTML, which just compiles your CoffeeScript client-side (see also
     [Getting Started][tutorial] for more on setup):
@@ -26,6 +26,8 @@ block content
         <script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js'></script>
         <script src='//cdnjs.cloudflare.com/ajax/libs/underscore.string/2.3.0/underscore.string.min.js'></script>
         <script src='//cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.3/coffee-script.min.js'></script>
+        <!-- Include es5-shim if you are targeting older IEs -->
+        <script src='//cdnjs.cloudflare.com/ajax/libs/es5-shim/2.1.0/es5-shim.min.js'></script>
         <script src='//cdnjs.cloudflare.com/ajax/libs/reactive-coffee/0.0.5/reactive-coffee.min.js'></script>
         <script type="text/coffeescript">
           bind = rx.bind
