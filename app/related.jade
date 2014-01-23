@@ -91,23 +91,21 @@ block content
       way of doing things such as low-level DOM manipulation—something that
       Reactive intentionally delegates to jQuery.
 
-      React re-constructs a lightweight representation of the entire updated
-      DOM and computes diffs to determine what actual DOM operations to
-      execute.  Programmability-wise, this is not as straightforward as working
-      with the actual DOM objects, requiring some awkward concepts such as
-      refs, and this does lead to some tricky situations involving the
-      predictability of re-rendering and also the control of things such as
-      [element focus].  Performance-wise, the approach is adequate for certain
-      classes of applications, though the process takes on the order of 1ms for
-      simple applications such as TodoMVC.  For other applications performance
-      does unfortunately matter, e.g. for more complex views (such as a web
-      page editor, where not only the controls but the edited web page DOM
-      itself is rendered as the user is typing) and for when you're trying to
-      produce smooth responses to mouse move/drag events.  It's also more
-      straightforward to interact with the rendered DOM element, as that is the
-      primary representation being worked with.  That said, it would be neat to
-      implement this in Reactive anyway (see "Cell-Free Re-Rendering Analysis"
-      in [Ideas](ideas.html)).
+      React, like [WebFUI], re-constructs a lightweight representation of the
+      entire updated DOM and computes diffs to determine what actual DOM
+      operations to execute.  Programmability-wise, this is not as
+      straightforward as working with the actual DOM objects, requiring some
+      awkward concepts such as refs, and this does lead to some tricky
+      situations involving the predictability of re-rendering and also the
+      control of things such as [element focus].  Performance-wise, the
+      approach is adequate for certain classes of applications/contexts, though
+      the process takes on the order of 1ms in a modern desktop/laptop browser
+      for simple applications such as TodoMVC.  For other applications or on
+      mobile devices, performance/battery life do unfortunately matter.  This
+      is more frequently the case as rich client-side application complexity
+      grows.  Consider a browser-based Photoshop clone—smooth dragging controls
+      affecting a small number of on-screen components cannot incur the
+      full DOM diff algorithm per frame.
 
       Feel free to dig into our clone of the React tutorial, under
       `examples/react-tut/`.
@@ -138,6 +136,7 @@ block content
     [React.js]: http://www.reactjs.com/
     [BBvKO]: http://stackoverflow.com/a/6340870/43118
     [Backbone]: http://backbonejs.org
+    [WebFUI]: https://github.com/drcode/webfui
 
     [spaces]: https://groups.google.com/forum/?fromgroups#!topic/reactjs/gcRqGANsy40
     [integration]: https://groups.google.com/forum/?fromgroups#!topic/reactjs/IzRlS2mBbKs
