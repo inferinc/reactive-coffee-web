@@ -205,13 +205,13 @@ block content
 
     Cells are the most general type of observable container.  However, there are
     also observable containers with special support for arrays and objects.  This
-    special support is to support more efficient and fine-grained event types
+    special support is for more efficient and fine-grained event types
     reflecting changes to particular sub-parts rather than an all-encompassing
     `onSet` event.  For instance, arrays commonly have elements inserted or removed
     from them, in which case we'd like to avoid re-rendering entire dependent
     sections of the DOM or otherwise needing to figure out what parts have changed.
 
-    Arrays support a `onChange` is a particularly special type of event.  It fires
+    Arrays support an `onChange` event.  It fires
     with a triple `[index, removed, added]`, where `index` is the offset into the
     array where the change is happening, `removed` is the sub-array of elements
     removed, and `added` is the sub-array of elements inserted.  Example:
@@ -562,6 +562,28 @@ block content
 
     (These behaviors may be folded into core `rxt` behavior if it proves to be
     a sensible default.)
+
+    ## More on Arrays and Reactive Templates
+
+    Arrays also support an `indexed` method which returns a copy of the array,
+    but which actually tracks the indices of its elements, such that when you
+    `map` the array, the mapper function is given the index (as a reactive
+    cell) in addition to the current element.  This way you can react to shifts
+    in the position of each element.
+
+    For instance, if you had a list where you wanted the rows to be styled
+    based on whether they're prime:
+
+    ```coffeescript
+    xs = rx.array(...)
+    ul xs.indexed().map (x,i) ->
+      li {class: bind -> if isPrime(i.get()) then 'prime' else ''}, x
+    # shifts the entire array, but still only prime rows have class "prime"
+    xs.removeAt(0)
+    ```
+
+    This is not built into `map` since it would make `map`s more expensive, and
+    in general this is a less-frequently used feature.
 
     ## Components
 

@@ -116,6 +116,10 @@ block content
       removed]`, where `index` is the index where the change occurred, `added`
       is the sub-array of elements that were added, and `removed` is the
       sub-array of elements that were removed.
+    - `indexed()`: return a `DepArray` that mirrors this array, but whose `map`
+      method passes in the index as well.  The mapper function takes `(x,i)`
+      where `x` is the current element and `i` is a cell whose value always
+      reflects the index of the current element.
 
     **`SrcArray` members**
 
