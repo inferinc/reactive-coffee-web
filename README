@@ -26,7 +26,7 @@ On new release:
 
 - make cdnjs pull request
 - update change log
-- update front page download links, version, size
+- update front page download links, version, size, date
 - update cdnjs link in quickstart, tutorial, jsfiddles
 - update infelicities (if any fixed) and other documentation
 - update dependencies (if any change) in the jsfiddles
