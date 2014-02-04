@@ -224,6 +224,42 @@ block content
     # replaced 0 element(s) at offset 3 with 1 new element(s)
     ```
 
+    From a declarative point of view, you can define a _dependent array_ to be
+    a mapped transformation of a _source array_:
+
+    ```coffeescript
+    ys = xs.map (x) -> 2 * x
+    # ys.all() is now [2, 4, 6, 8]
+    xs.push(5)
+    # ys.all() is now [2, 4, 6, 8, 10]
+    ```
+
+    Besides `push` as shown in the above example, there are a few other
+    mutation methods built in.  Some are modeled after Javascript's `Array`
+    methods, e.g. `splice`, while others are new, e.g. `insert`.
+
+    However, for arbitrary transformations of arrays, you can use the `update`
+    method, which actually does the smart thing and performs a diff between the
+    old and new contents of the array, so as to minimize the downstream
+    dependencies.  So in fact, you could implement all other update methods in
+    terms of `update`.  The above `push` example could also have been written
+    with `xs.update(xs.all().concat([4]))`, and that would have similarly
+    resulted in just a single element insertion in the downstream mapped array.
+
+    In the same spirit, you can convert an `ObsCell` containing an array to a
+    `DepArray` with `cellToArray`, which simply maintains the `DepArray` via
+    the `update` mechanism (diffing and issuing minimal downstream change
+    events):
+
+    ```coffeescript
+    cell = rx.cell([1,2,3])
+    xs = rx.cellToArray(cell)
+    xs.onChange.sub ([index, removed, added]) ->
+      console.log "replaced #{removed.length} element(s) at offset #{index} with #{removed.length} new element(s)"
+    cell.set(cell.get().concat([4]))
+    # replaced 0 element(s) at offset 3 with 1 new element(s)
+    ```
+
     ## Static Templates
 
     Now for a brief jump to something entirely different....

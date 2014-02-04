@@ -30,8 +30,10 @@ block content
 
     - `cell(value)`: return a `SrcCell` initialized to the given value (optional;
       defaults to `undefined`)
-    - `array(value)`: return a `SrcArray` initialized to the given array (optional;
-      defaults to `[]`)
+    - `array(value[, diff])`: return a `SrcArray` initialized to the given
+      array (optional; defaults to `[]`) and the given `diff` function for
+      computing/propagating the minimal set of change events (defaults to
+      `rx.basicDiff()`).
     - `bind(fn)`: given a 0-ary function, return a `DepCell` whose value is
       bound to the result of evaluating that function.  The function is immediately
       evaluated once, and each time it's evaluated, for any accesses of
@@ -83,6 +85,21 @@ block content
       subscription ID.
     - `concat(arrays...)`: returns a dependent array that is the result of
       concatenating multiple `ObsArray`s (efficiently maintained).
+    - `cellToArray(cell[, diff])`: given an `ObsCell` of an array, return a
+      `DepArray` that issues the minimal set of change events by diffing the
+      contents of the array to determine what has changed.  Similar in
+      mechanism to `SrcArray.update`.  `diff` is an optional diff function (see
+      `SrcArray.update` documentation) and defaults to `rx.basicDiff()`.
+    - `basicDiff([key])`: returns a diff function that takes two arrays and
+      uses the given key function, which defaults to `rx.smartUidify`, to
+      efficiently hash-compare elements between the two arrays.  Used by
+      `rx.cellToArray`.
+    - `smartUidify(x)`: returns a unique identifier for the given object.  If
+      the item is a scalar, then return its JSON string.  If the item is an
+      object/array/etc., create a unique ID for it, insert it (this is a
+      standard "hashing hack" for JS) as a non-enumerable property `__rxUid`,
+      and return it (or just return any already-existing `__rxUid`).  I.e.,
+      this implements reference equality.  Used by `rx.basicDiff`.
 
     **`ObsCell` members**
 
@@ -123,6 +140,9 @@ block content
 
     **`SrcArray` members**
 
+    - `SrcArray([xs[, diff]])`: constructor that initializes the content array
+      to `xs` (note: keeps a reference and does not create a copy) and the diff
+      function for `update` to `diff` (defaults to `rx.basicDiff()`).
     - `splice(index, count, additions...)`: replace `count` elements starting at
       `index` with `additions`
     - `insert(x, i)`: insert value `x` at index `i`
@@ -131,6 +151,11 @@ block content
     - `push(x)`: append `x` to the end of the array
     - `put(i, x)`: replace element `i` with value `x`
     - `replace(xs)`: replace entire array with raw array `xs`
+    - `update(xs[, diff])`: replace entire array with raw array `xs`, but apply
+      the `diff` algorithm to determine the minimal set of changes for which to
+      emit events.  This enables flexible updating of the array, representing
+      arbtirary transformations, while at the same time minimizing the
+      downstream recomputation necessary (particularly DOM manipulations).
     - inherits `ObsArray`
 
     **`DepArray` members**
