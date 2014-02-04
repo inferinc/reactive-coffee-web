@@ -369,24 +369,52 @@ block content
     `init` was an example of a _special attribute_.  These are just attributes
     that are intercepted and handled differently from others, which are simply
     passed on as regular HTML attributes on the DOM element.  Besides `init`,
-    built-in special attributes include `style`, which in addition to regular
-    style strings accepts jQuery-style mappings like `{fontSize: 10}`, and all
-    jQuery events: `click`, `focus`, `mouseleave`, `keyup`, `load`, etc.  So
-    we ould have bound the blur event directly (note it also takes a jQuery
-    object as `this`):
+    built-in special attributes include:
 
-    ```coffeescript
-    ...
-          input {
-            type: 'text'
-            value: prop.value
-            placeholder: 'Enter property value'
-            blur: ->
-              $row.css('opacity', .5)
-              setProperty(prop, @val())
-          }
-    ...
-    ```
+    - `style`, which in addition to regular style strings accepts jQuery-style
+      mappings like `{fontSize: 10}`, so you can write:
+
+      ```coffeescript
+      div {
+        style: bind ->
+          width: score.get()
+          color: if team.get() == 'a' then 'red' else 'blue'
+          display: 'none' if gameMode.get() != 'running'
+      }
+      ```
+
+      (You can also access this transform directly via `rxt.cssify`.)
+
+    - `class`, which in addition to regular class strings accepts an array of
+      class names (filtering out `undefined`), e.g.:
+
+      ```coffeescript
+      button {
+        class: bind -> [
+          'btn'
+          'btn-primary' if formComplete.get()
+        ]
+      }
+      ```
+
+      (You can also access this transform directly via `rxt.smushClasses`.)
+
+    - and all jQuery events: `click`, `focus`, `mouseleave`, `keyup`, `load`,
+      etc.  So we could have bound the blur event in the earlier example
+      directly (note it also takes a jQuery object as `this`):
+
+      ```coffeescript
+      ...
+            input {
+              type: 'text'
+              value: prop.value
+              placeholder: 'Enter property value'
+              blur: ->
+                $row.css('opacity', .5)
+                setProperty(prop, @val())
+            }
+      ...
+      ```
 
     You can also add your own special attribute by inserting a function into
     the `specialAttrs` global structure.
