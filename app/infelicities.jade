@@ -6,7 +6,7 @@ block content
     Infelicities
     ============
 
-    There are a number of areas for immediate improvement, including but not
+    There are a number of areas for improvement, including but not
     limited to the following:
 
     ## Alternative Syntax Support
@@ -19,23 +19,12 @@ block content
     infrastructure to make writing alternative syntaxes easy (if we can't stop
     you, we might as well make it clean to "fork").
 
-    ## Lazy Change Propagation
-
-    This one is rather low-hanging fruit: when a cell's value has been set to the
-    same value, we should not propagate events downstream to dependent nodes.
-
     ## Structural Attribute Bindings
 
     Currently, attributes are strings.  For most attributes this is fine, but for
     certain attributes such as `style`, we could have a simple convenience
     preprocessor that takes in an object map of the style names and renders the
     string.  This could be extended to lists for `class` and so on.
-
-    ## More Combinators
-
-    There are only a few combinators right now.  Besides `map`, we also are
-    interested in adding (efficient implementations of) `filter`, `sort`,
-    `fold`/`reduce`, etc.
 
     ## Topologically Ordered Visits
 
