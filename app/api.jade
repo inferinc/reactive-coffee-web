@@ -108,6 +108,11 @@ block content
     - `liftSpec(x)`: given an object `x`, return a spec for `rx.lift` where any
       field that is an array is to be stored in an `rx.array`, and otherwise in
       an `rx.cell`.
+    - `transaction(f)`: run the given function in a _transaction_, during which
+      updates to observables will not emit change events to their subscribers.
+      Only once the transaction ends will all events be fired (at which time the
+      state of the source cells will no longer be in flux, and thus a
+      consistent view of the universe can always be maintained).
 
     **`ObsCell` members**
 

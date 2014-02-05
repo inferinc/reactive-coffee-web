@@ -201,6 +201,39 @@ block content
 
     [pure functions]: https://en.wikipedia.org/wiki/Pure_function
 
+    ## Transactions
+
+    Sometimes you want to make a more complex update on some cells, while
+    preserving certain semantics/invariants over them.  For instance, consider
+    two cells representing the balances in two different bank accounts.  When
+    transferring funds from one to the other, there will transiently be a
+    moment when the total funds across both will be either greater or less than
+    what it really should be:
+
+    ```coffeescript
+    a = rx.cell(5)
+    b = rx.cell(3)
+    sum = bind -> a.get() + b.get()
+    # sum should always be 8, but when transferring 1 from a to b...
+    a.set(a.get() - 1)
+    # sum is now 7!
+    b.set(b.get() + 1)
+    # sum back to 8
+    ```
+
+    To prevent these "glitches" from being visible, we can bundle up the
+    operations into a _transaction_.  Throughout the duration of this
+    transaction, events will not be propagated.  For instance:
+
+    ```coffeescript
+    rx.transaction =>
+      a.set(a.get() - 1)
+      # sum will not yet have received any events
+      b.set(b.get() + 1)
+    # now sum will have received notifications, but it will see that the `a`
+    # and `b` still sum to 8.
+    ```
+
     ## Arrays and Maps
 
     Cells are the most general type of observable container.  However, there are
