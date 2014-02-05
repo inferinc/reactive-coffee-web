@@ -100,6 +100,14 @@ block content
       standard "hashing hack" for JS) as a non-enumerable property `__rxUid`,
       and return it (or just return any already-existing `__rxUid`).  I.e.,
       this implements reference equality.  Used by `rx.basicDiff`.
+    - `lift(x[, spec])`: convert an object `x` containing regular
+      non-observable fields to one with observable fields instead.  `spec` is a
+      mapping from field name to either `'cell'`, `'array'`, or `'map'`, based
+      on what kind of observable data structure we want.  By default this is
+      supplied by `rx.liftSpec`.
+    - `liftSpec(x)`: given an object `x`, return a spec for `rx.lift` where any
+      field that is an array is to be stored in an `rx.array`, and otherwise in
+      an `rx.cell`.
 
     **`ObsCell` members**
 

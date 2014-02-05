@@ -764,6 +764,43 @@ block content
     `rx(property)` returns the value of the given property (`focused`,
     `checked`, `val`) as a cell.
 
+    ## Lifting
+
+    Often times your models will consist of objects or instances with various observable fields.  For instance, consider the `User` class defined earlier:
+
+    ```coffeescript
+    class User
+      constructor: (id, name) ->
+        @id = rx.cell(id)
+        @name = rx.cell(name)
+    ```
+
+    You can alternatively take advantage of the dynamic runtime and use the
+    meta-facility `rx.lift` to convert a plain old Javascript object containing
+    non-observable fields to one with observable fields:
+
+    ```coffeescript
+    x = {a:0, b:[], c:{}, d:null}
+    rx.lift(x) # also returns x
+    x.a.get() # 0
+    x.b.all() # []
+    x.c.get() # {}
+    x.d.get() # null
+    ```
+
+    It also makes writing `User` above simpler:
+
+    ```coffeescript
+    class User
+      constructor: (@id, @name) -> rx.lift(@)
+    new User(0, 'Joe').name.get() # Joe
+    ```
+
+    By default, fields that are arrays are turned into `rx.array`, while others
+    are turned into `rx.cell`.  You can control/refine how fields are lifted by
+    passing in a spec (by default, uses `rx.liftSpec` to generate one).  See
+    the [API documentation] for more details.
+
     ## ES5 Properties
 
     So far, everything is built on observable data structures, which are just
@@ -860,3 +897,4 @@ block content
     [advanced]: advanced.html
     [design]: design.html
     [contact]: https://groups.google.com/forum/?fromgroups#!forum/reactive-coffee
+    [API documentation]: api.html
