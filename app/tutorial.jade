@@ -110,7 +110,7 @@ block content
     ```coffeescript
     firstName = rx.cell('John')
     # This ensures .name will always reflect the firstName
-    firstName.sub ([oldVal, newVal]) ->
+    firstName.onSet.sub ([oldVal, newVal]) ->
       $('.name').text(newVal)
     firstName.set('Jane')
     ```
