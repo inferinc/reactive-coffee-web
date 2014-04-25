@@ -140,8 +140,8 @@ block content
 
     updateName = ->
       $('.name').text("#{firstName.get()} #{lastName.get()}")
-    firstName.sub -> updateName
-    lastName.sub -> updateName
+    firstName.onSet.sub -> updateName
+    lastName.onSet.sub -> updateName
 
     firstName.set('Jane')
     lastName.set('Doe')
