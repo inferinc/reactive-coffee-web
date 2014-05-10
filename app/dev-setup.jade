@@ -9,7 +9,6 @@ block content
     To fetch node dependencies:
 
         npm install # pull dependencies into ./node_modules
-        npm install -g phantomjs@1.9.0-4 # temp workaround for karma phantomjs launcher
         npm install -g grunt-cli@0.1.9 # for conveniently running grunt
         npm install -g bower@1.0.0 # for conveniently running bower
 
@@ -24,13 +23,6 @@ block content
     To test:
 
         grunt test
-
-    Tests may spew this error after running:
-
-        ERROR [launcher]: Cannot start PhantomJS
-
-    You can ignore this; it was a Karma bug, fixed recently in
-    <https://github.com/karma-runner/karma/issues/444>.
 
     Before making commits, please set up the commit-hook:
 
