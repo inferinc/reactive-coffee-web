@@ -24,6 +24,8 @@ Releases
 
 On new release:
 
+- update package.json, bower.json
+- git tag
 - make cdnjs pull request
 - update change log
 - update front page download links, version, size, date
