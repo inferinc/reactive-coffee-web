@@ -229,12 +229,15 @@ block content
       your templates.  Useful for quickly throwing something together.
     - `rawHtml(html)`: returns a `RawHtml` wrapper for strings that tags won't
       escape when rendering; example: `div {}, [rawHtml('<span>hello</span>')]`
-    - `rxt.cast(opts, types)`: convenience utility for use in preparing
-      arguments for a component.  `opts` is the arguments object mapping, and
-      `types` is an object mapping fields of `opts` to either `cell` or
-      `array`.  `cast` returns a copy of `opts` but with the fields casted
-      based on the specified desired `types` (yielding observable cells and
-      arrays).
+    - `rxt.cast(...)`: two forms:
+        - `rxt.cast(opts, types)`: convenience utility for use in preparing
+          arguments for a component.  `opts` is the arguments object mapping,
+          and `types` is an object mapping fields of `opts` to either `cell` or
+          `array`.  `cast` returns a copy of `opts` but with the fields casted
+          based on the specified desired `types` (yielding observable cells and
+          arrays).
+        - `rxt.cast(data, type)`: lift the given datum to the given type; acts
+          as identity function if data is already of the proper type
     - `rxt.cssify(props)`: convenience utility for programmatically constructing
       strings suitable for use as a `style` attribute.  Takes an object mapping
       camelCase versions of style property names and values that are either
