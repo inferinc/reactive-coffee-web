@@ -190,6 +190,8 @@ block content
 
     - `put(k, v)`: associate value `v` with key `k` and return any prior value associated with `k`
     - `remove(k)`: remove the entry associated at key `k`
+    - `update(map)`: update the current `SrcMap`'s contents to those of the
+      given JS object `map`, triggering any necessary `remove`s and `put`s
     - inherits `ObsMap`
 
     **`DepMap` members**
