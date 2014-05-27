@@ -52,11 +52,26 @@ block content
     </script>
     ```
 
-    To start using the tags directly without having to prefix them with the `rxt`
-    namespace, include this at the top of your CoffeeScript:
+    To follow along with these examples and use reactive HTML element tags
+    without having to use their fully qualified name in `rx.rxt.tags`, include
+    this at the top of your CoffeeScript:
 
     ```coffeescript
-    rxt.importTags()
+    rx.rxt.importTags()
+    ```
+
+    This lets you write:
+
+    ```coffeescript
+    span 'hello world'
+    ```
+
+    Alternatively, to use without polluting the global namespace (recommended
+    for larger-scale apps), just shorten the namespace prefix:
+
+    ```coffeescript
+    T = rx.rxt.tags
+    T.span 'hello world'
     ```
 
     The following examples also lift `rx.bind` out of its namespace:
@@ -709,7 +724,7 @@ block content
         initialTabIndex: 0
         activeClass: 'active-tab'
         change: ->
-      opts = rxt.cast opts,
+      opts = rx.rxt.cast opts,
         tabs: 'array'
 
       activeTabIndex = rx.cell(opts.initialTabIndex)
