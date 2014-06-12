@@ -189,7 +189,7 @@ block content
 
     The bindings are managed such that only the dependent cells that could possibly
     affect the result are effective dependencies.  In this example, at any moment,
-    `fullName` depends either only on `showRealName` and `fulName` *or* only on
+    `fullName` depends either only on `showRealName` and `fullName` *or* only on
     `showRealName` and `fakeName`.  If `showRealName` is false, changes to
     `firstName` and `lastName` will not trigger a re-render of the `.name`.
 
