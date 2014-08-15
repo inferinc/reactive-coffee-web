@@ -257,12 +257,17 @@ block content
     ## Arrays and Maps
 
     Cells are the most general type of observable container.  However, there are
-    also observable containers with special support for arrays and objects.  This
-    special support is for more efficient and fine-grained event types
-    reflecting changes to particular sub-parts rather than an all-encompassing
-    `onSet` event.  For instance, arrays commonly have elements inserted or removed
-    from them, in which case we'd like to avoid re-rendering entire dependent
-    sections of the DOM or otherwise needing to figure out what parts have changed.
+    also observable containers with special support for arrays and maps
+    (that is, Javascript objects, which are basically maps).  This specialized
+    support is for more efficient and fine-grained event types reflecting
+    changes to particular sub-parts rather than an all-encompassing `onSet`
+    event whenever any part of the array or map changes.
+
+    For instance, arrays commonly have elements inserted into or removed from
+    them, in which case we'd like to avoid re-rendering entire dependent
+    sections of the DOM or otherwise needing to figure out what parts have
+    changed (the relationship between these reactive data structures and DOM
+    UI rendering will be explained in later sections).
 
     Arrays support an `onChange` event.  It fires
     with a triple `[index, removed, added]`, where `index` is the offset into the
@@ -312,6 +317,51 @@ block content
     cell.set(cell.get().concat([4]))
     # replaced 0 element(s) at offset 3 with 1 new element(s)
     ```
+
+    _Objects_ also exist, but are called _maps_.  They are pretty
+    straightforward as regular containers:
+
+    ```coffeescript
+    months = rx.map()
+    months.put('Mar', 3)
+    months.put('Aug', 8)
+    months.put('Oct', 10)
+    months.get('Mar') # 3
+    months.remove('Oct') # 10
+    months.all() # {"Mar": 3, "Aug": 8}
+    ```
+
+    With maps, there are three different event types:
+
+    ```coffeescript
+    months = rx.map({"Mar": 3, "Aug": 8})
+    months.onAdd.sub ([key, val]) ->
+      console.log "set #{key} to #{val}"
+    # set Mar to 3
+    # set Aug to 8
+    months.onChange.sub ([key, oldVal, newVal]) ->
+      console.log "updated #{key} (which had mapped to #{oldVal}) to #{newVal}"
+    months.onRemove.sub ([key, val]) ->
+      console.log "removed #{key} which had mapped to #{val}"
+
+    months.set('May', 5)
+    # set May to 5
+    months.set('Mar', 'three')
+    # updated Mar (which had mapped to 3) to three
+    months.remove('Oct')
+    # removed Aug which had mapped to 8
+    ```
+
+    The key to maps is that you can bind to changes to just certain keys.  For
+    instance, if you had:
+
+    ```coffeescript
+    mar = bind -> months.get('Mar')
+    dec = bind -> months.get('Dec')
+    ```
+
+    Then `mar` will be re-evaluated only when the `"Mar"` key is
+    changed/removed, and `dec` will only when the `"Dec"` key is inserted.
 
     ## Static Templates
 
