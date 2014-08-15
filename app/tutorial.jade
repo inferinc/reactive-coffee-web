@@ -272,7 +272,7 @@ block content
     ```coffeescript
     xs = rx.array([1,2,3])
     xs.onChange.sub ([index, removed, added]) ->
-      console.log "replaced #{removed.length} element(s) at offset #{index} with #{removed.length} new element(s)"
+      console.log "replaced #{removed.length} element(s) at offset #{index} with #{added.length} new element(s)"
     xs.push(4)
     # replaced 0 element(s) at offset 3 with 1 new element(s)
     ```
@@ -315,7 +315,8 @@ block content
 
     ## Static Templates
 
-    Now for a brief jump to something entirely different....
+    Now for a brief jump to something entirely different from reactive
+    programming....
 
     The "template" system is implemented as an embedded domain-specific language
     (DSL) in CoffeeScript, which happens to have a syntax that [lends itself
@@ -513,8 +514,9 @@ block content
     Reactive templates tie together the UI-building style from the previous section
     with the reactive programming primitives from earlier.
 
-    You could just write explicit imperative code to transform the DOM in a way
-    that consistently reflects the bindings you're interested in.  For instance:
+    Now, you *could* just write explicit imperative code to transform the DOM
+    in a way that consistently reflects the bindings you're interested in.
+    For instance:
 
     ```coffeescript
     $('body').append(input {
