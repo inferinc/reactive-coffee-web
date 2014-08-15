@@ -700,8 +700,13 @@ block content
       option {value: "#{user.id.get()}"}, "#{user.name.get()}"
     ```
 
-    Nested `bind`/`map` calls are insulated from outer calls, re-rendering only
-    what's necessary.  As an escape hatch, to insulate some code `fn` from the
+    <div class='note'>
+    **Key Lesson**:
+    Nested `bind`/`map` calls are insulated from outer calls,
+    re-rendering only what's necessary.
+    </div>
+
+    As an escape hatch, to insulate some code `fn` from the
     current bind context and *not* subscribe to any dependencies therein, you
     can use `rx.snap(fn)`.  This is evaluated only once:
 
@@ -905,6 +910,39 @@ block content
     are turned into `rx.cell`.  You can control/refine how fields are lifted by
     passing in a spec (by default, uses `rx.liftSpec` to generate one).  See
     the [API documentation] for more details.
+
+    ## Anti-Pattern: Non-Nesting
+
+    Do not construct UIs "out-of-band" from the `bind` hierarchy:
+
+    ```coffeescript
+    namedisp = span {class: 'name'}, username.get()
+    popup = div {class: 'modal'}, bind -> namedisp
+    ```
+
+    The above will either
+
+    - fail to ever update `namedisp`, assuming there is no outer bind
+      running this code, or
+    - cause any outer bind running this code (not shown) to re-evaluate
+      (likely unintended).
+
+    This doesn't mean you always need to syntactically nest your code in the
+    following way:
+
+    ```coffeescript
+    popup =
+      div {class: 'modal'}, bind ->
+        span {class: 'name'}, username.get()
+    ```
+
+    Instead, you can maintain the original structure of the code, but just
+    defer running the code until you're inside the bind, using functions:
+
+    ```coffeescript
+    namedisp = -> span {class: 'name'}, username.get()
+    popup = div {class: 'modal'}, bind -> namedisp()
+    ```
 
     ## ES5 Properties
 
