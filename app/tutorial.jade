@@ -363,12 +363,21 @@ block content
     Then `mar` will be re-evaluated only when the `"Mar"` key is
     changed/removed, and `dec` will only when the `"Dec"` key is inserted.
     
+<<<<<<< HEAD
     ### Object Oriented Programming: A Pattern for Public and Private cells.
     Often, when using an object oriented approach, one wants to expose values to the user without permitting them 
     to change those values directly. With reactive coffee cells, we would also want to be able to subscribe listeners
     to these private cells. However, we still need to be able to set the value of the cell internally. To achieve this, 
     we can make use of `rx.bind`, which returns a `DepCell` object. These objects do not have a set method, and cannot
     be directly mutated by the user.:
+=======
+    ## Object-Oriented Programming: A Pattern for Public and Private cells.
+    Often, when using an object-oriented approach, one wants to expose values to the user without permitting them 
+    to change those values directly. When using reactive, we would also want the user to be able to subscribe 
+    listeners. to these private cells. In addition, we still need to be able to set the value of the cell internally. 
+    To achieve this,  we can make use of `rx.bind`, which returns a `DepCell` object. These objects do not have a 
+    set method, and thus cannot be directly mutated by the user:
+>>>>>>> 84597c7... Update tutorial.jade
 
     ```coffeescript
     class Incrementer
@@ -378,11 +387,31 @@ block content
         @increment = => _value.set(value.get() + 1)
 
     inc = new Incrementer()
+<<<<<<< HEAD
     inc.value.onSet.sub([oldVal, newVal] -> console.log(newVal))
+=======
+    inc.value.onSet.sub ([oldVal, newVal]) -> console.log(newVal)
+>>>>>>> 84597c7... Update tutorial.jade
     inc.increment() # prints 1
     inc.value.set(42) # error, not allowed.
     ```
     
+<<<<<<< HEAD
+=======
+    The usefulness of this pattern is not limited to object oriented programming. We can use this any time we wish to return
+    a read-only cell:
+    
+    ```coffeescript
+    autoIncrementedCell = (start) -> 
+      value = rx.cell(start)
+      setInterval(value.set(value.get() + 1), 1000)
+      return bind -> value.get()
+      
+    c = autoIncrementedCell(0)
+    c.onSet.sub ([oldVal, newVal]) -> console.log(newVal)
+    ```
+    
+>>>>>>> 84597c7... Update tutorial.jade
     ## Static Templates
 
     Now for a brief jump to something entirely different from reactive
