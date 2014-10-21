@@ -362,7 +362,40 @@ block content
 
     Then `mar` will be re-evaluated only when the `"Mar"` key is
     changed/removed, and `dec` will only when the `"Dec"` key is inserted.
+    
+    ## Object-Oriented Programming: A Pattern for Public and Private cells.
+    Often, when using an object-oriented approach, one wants to expose values to the user without permitting them 
+    to change those values directly. When using reactive, we would also want the user to be able to subscribe 
+    listeners. to these private cells. In addition, we still need to be able to set the value of the cell internally. 
+    To achieve this,  we can make use of `rx.bind`, which returns a `DepCell` object. These objects do not have a 
+    set method, and thus cannot be directly mutated by the user:
 
+    ```coffeescript
+    class Incrementer
+      constructor: ->
+        _value = rx.cell(0) # private field which can be freely changed within this constructor's scope.
+        @value = bind => _value.get() # public field; its value mirrors that of _value, but cannot be directly changed by the user.
+        @increment = => _value.set(value.get() + 1)
+
+    inc = new Incrementer()
+    inc.value.onSet.sub ([oldVal, newVal]) -> console.log(newVal)
+    inc.increment() # prints 1
+    inc.value.set(42) # error, not allowed.
+    ```
+    
+    The usefulness of this pattern is not limited to object oriented programming. We can use this any time we wish to return
+    a read-only cell:
+    
+    ```coffeescript
+    autoIncrementedCell = (start) -> 
+      value = rx.cell(start)
+      setInterval(value.set(value.get() + 1), 1000)
+      return bind -> value.get()
+      
+    c = autoIncrementedCell(0)
+    c.onSet.sub ([oldVal, newVal]) -> console.log(newVal)
+    ```
+    
     ## Static Templates
 
     Now for a brief jump to something entirely different from reactive
