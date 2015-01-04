@@ -198,9 +198,10 @@ block content
 
     There's also a similar function, `postLagBind`, contributed by
     [@eizenberg], which instead introduces a lag but *after* the function
-    evaluation (which is immediate upon).  This allows you to specify a dynamic
-    delay as part of the result.  In this example, the tootip appears
-    instantly, but disappears only after a delay:
+    evaluation/re-capture (which is immediate upon any changes to
+    dependencies).  This allows you to specify a dynamic delay as part of the
+    result, where the delay duration comes from observables.  In this example,
+    the tootip appears instantly, but disappears only after a delay:
 
     ```coffeescript
     showTooltip = rx.postLagBind false, ->
@@ -208,9 +209,9 @@ block content
       else val: false, ms: 300
     ```
 
-    More generally, you can implement your own asynchronous binds (which
-    `bind`, `lagBind`, and `postLagBind`) are all expressed in terms of
-    `asyncBind`.  You supply a function that runs the asynchronous
+    More generally, you can implement your own asynchronous binds.  `bind`,
+    `lagBind`, and `postLagBind` are all expressed in terms of `asyncBind`.
+    You supply a function that runs the asynchronous
     lifecycle.  At a single point in the lifecycle, you can call
     `this.record(f)`, passing it a function which will record and subscribe to
     dependencies.  This can be called only once; otherwise things like disposal
