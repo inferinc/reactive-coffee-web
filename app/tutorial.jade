@@ -761,7 +761,7 @@ block content
     div {}, rx.flatten [
       h1 {}, 'Header'
       headerItems.map (item) -> ...
-      separator if showSeparator.get()
+      bind -> separator if showSeparator.get()
       h1 {}, 'Footer'
       footerItems.map (item) -> ...
     ]
