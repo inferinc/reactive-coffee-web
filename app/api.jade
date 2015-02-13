@@ -240,11 +240,14 @@ block content
           arrays).
         - `rxt.cast(data, type)`: lift the given datum to the given type; acts
           as identity function if data is already of the proper type
-    - `rxt.cssify(props)`: convenience utility for programmatically constructing
-      strings suitable for use as a `style` attribute.  Takes an object mapping
-      camelCase versions of style property names and values that are either
-      strings (which are put in verbatim), numbers (which are written as pixels),
-      or `null`/`undefined` (which omits that property altogether).
+    - `rxt.cssify(props)`: **(deprecated: set the `style` property directly to
+      a JSON object instead of using this so as to use `jQuery.css`, which is
+      smarter about interpreting the given values)** convenience utility for
+      programmatically constructing strings suitable for use as a `style`
+      attribute.  Takes an object mapping camelCase versions of style property
+      names and values that are either strings (which are put in verbatim),
+      numbers (which are written as pixels), or `null`/`undefined` (which
+      omits that property altogether).
     - `rxt.smushClasses(classes)`: convenience utility for programmatically
       constructing strings suitable for use as a `class` attribute.  Takes an
       array of strings or `undefined`s (useful for conditionally including a
