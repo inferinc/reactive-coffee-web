@@ -118,12 +118,13 @@ block content
     ```
 
     If you try something like the following, i.e. explicitly wire up a
-    dependent cell to modify a source cell:
+    dependent cell (plusOne, which depends on src) to modify another source cell (dst):
 
     ```coffeescript
+    dst = rx.cell()
     bind ->
       x = plusOne.get()
-      dst.set(val)
+      dst.set(x)
     src.set(2)
     ```
 
