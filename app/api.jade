@@ -142,8 +142,8 @@ block content
     - `length()`: return size of the array
     - `map(fn)`: return `DepArray` of given function mapped over this array
     - `onChange`: the event that is fired after any part of the array is
-      changed.  The event data is an array of three elements: `[index, added,
-      removed]`, where `index` is the index where the change occurred, `added`
+      changed.  The event data is an array of three elements: `[index, removed,
+      added]`, where `index` is the index where the change occurred, `added`
       is the sub-array of elements that were added, and `removed` is the
       sub-array of elements that were removed.
     - `indexed()`: return a `DepArray` that mirrors this array, but whose `map`
