@@ -1,6 +1,6 @@
 extends layouts/rationale
 block title
-  | Related Work and Comparisons - reactive.coffee
+  | Related Work and Comparisons - bobtail
 block content
   :markdown
     Related Work and Comparisons
@@ -11,7 +11,7 @@ block content
     these are all just opinions of the original author, who has deep respect
     for the work of these other library authors, and liberally draws
     inspiration from them.  Ideally, there wouldn't have been a need to create
-    Reactive.
+    Bobtail.
 
     - Any of the multitude of declarative UI toolkits based on reactive
       programming, especially FRP in the Haskell universe, but also [Bling],
@@ -19,7 +19,7 @@ block content
 
     - Specifically in JS land: [Knockout] in terms of the mechanics behind
       observables and computed observables, but with fewer moving parts and API
-      surface (no read/write interception, context management, etc.).  Reactive
+      surface (no read/write interception, context management, etc.).  Bobtail
       originally tried simply reusing KO, but ultimately divorced itself since
       there are both desired features that are missing (differences in array event
       propagation, topologically ordered batch propagations, etc.) and features
@@ -34,7 +34,7 @@ block content
       also aren't quite the same in that they still require you to explicitly
       specify the subscriptions and use combinators to merge different streams.
 
-      Reactive is more similar to [Knockout] than it is to [Backbone] (see [this
+      Bobtail is more similar to [Knockout] than it is to [Backbone] (see [this
       Stack Overflow answer][BBvKO] for more).
 
     - [Angular] is a popular framework that emphasizes testability.  The
@@ -98,7 +98,7 @@ block content
       property transfer, controlling update propagation (`shouldComponentUpdate`,
       `componentWillReceiveProps`, etc.), and more.  React also requires its own
       way of doing things such as low-level DOM manipulation—something that
-      Reactive intentionally delegates to jQuery.
+      Bobtail intentionally delegates to jQuery.
 
       React, like [WebFUI], re-constructs a lightweight representation of the
       entire updated DOM and computes diffs to determine what actual DOM
@@ -121,7 +121,7 @@ block content
 
     - [Visage], formerly known as JavaFX, introduces incremental evaluation in a
       statically typed scripting language for the JVM.  It focuses on building
-      Swing UIs.  Reactive was actually originally inspired by its approach, which
+      Swing UIs.  Bobtail was actually originally inspired by its approach, which
       is also one of using a full programming language to host the declarative UI
       construction, along with its intuitive syntax for creating bindings.  JavaFX
       used compile-time transforms to implement incremental evaluation.

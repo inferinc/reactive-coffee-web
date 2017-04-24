@@ -1,6 +1,6 @@
 extends layouts/rationale
 block title
-  | FAQ - reactive.coffee
+  | FAQ - bobtail
 block content
   :markdown
     FAQ
@@ -10,15 +10,27 @@ block content
 
     See [Motivation and Design Rationale](design.html).
 
-    **How does Reactive stack up against the many other client-side frameworks?**
+    **How does Bobtail stack up against the many other client-side frameworks?**
 
     See [Related Work].
+
+    **Why did you rename Reactive Coffee to Bobtail?**
+
+    There were a few reasons. First, the name Reactive Coffee is rather uncomfortably close to [React](https://facebook.github.io/react/),
+    which, while a wonderful framework, is completely unrelated. There's also the implication in the name
+    "Reactive Coffee" that this is a CoffeeScript framework. While it's true that this was originally developed in
+    CoffeeScript, and CoffeeScript's terse syntax lends many advantages, there's absolutely no reason you can't use
+    JavaScript or TypeScript with Bobtail. So why Bobtail? We decided to rename it for the Kurilian Bobtail, a
+    [particularly adorable breed of cat](http://www.animalplanet.com/tv-shows/cats-101/videos/kurilian-bobtail/) native
+    to the Kuril islands. And if any animal in nature can be described as "reactive", felines definitely qualify.
+
+    Also the name bobtail was free on NPM and Bower, so yeah... there's that too.
 
     **Isn't this approach just reverting back to the PHP days of mixing markup
     and logic?**
 
-    Reactive is designed for rich application development.  Rather than focusing on
-    the division between markup and logic, Reactive focuses on separating models
+    Bobtail is designed for rich application development.  Rather than focusing on
+    the division between markup and logic, Bobtail focuses on separating models
     from views and on the component abstraction.  Components must encapsulate not
     just markup, but also behavior.  The two should be coupled, not separated.
 
@@ -30,13 +42,13 @@ block content
     [written]: http://boronine.com/2012/09/07/Cult-Of-Logic-less-Templates/
     [more]: http://www.ebaytechblog.com/2012/10/01/the-case-against-logic-less-templates/
 
-    **Why jQuery / what is the relationship between Reactive Coffee and jQuery?**
+    **Why jQuery / what is the relationship between Bobtail Coffee and jQuery?**
 
     The library just uses jQuery as a cross-browser interface to the DOM for its
     own operations.  All tags are wrapped in jQuery objects.  You don't need to use
     jQuery, but jQuery excels as a cross-platform API and is probably the most
     popular of managing low-level DOM operations.  Although jQuery is known to not
-    scale very well, higher-level application structure is where Reactive Coffee
+    scale very well, higher-level application structure is where Bobtail Coffee
     steps in.
 
     **Why the syntax noise in the template language?**
@@ -75,7 +87,7 @@ block content
 
     **Why not use Knockout observables?**
 
-    Reactive originally tried simply reusing KO, but ultimately divorced itself
+    Bobtail originally tried simply reusing KO, but ultimately divorced itself
     since there are both desired features that are missing (differences in array
     event propagation, topologically ordered batch propagations, etc.) and features
     that are unwanted (mis-matched programming model, larger API surface area,
@@ -86,7 +98,7 @@ block content
 
     Yes, it's cited in the list of [Related Work].  We chose `rx` because short
     namespaces are convenient and it's unlikely you're using RxJS if you're
-    using reactive.coffee, but please correct us if we're wrong.
+    using bobtail, but please correct us if we're wrong.
 
     **Do I need to sprinkle `rx.cell()` everywhere in my model?**
 
@@ -113,9 +125,12 @@ block content
     **Can I use this from JavaScript?**
 
     Yes, you can.  The main benefit of using CoffeeScript here is that it has a
-    very DSL-friendly syntax for Reactive's declarative UIs, and particularly
+    very DSL-friendly syntax for Bobtail's declarative UIs, and particularly
     for the terse anonymous function syntax to represent the incrementally
-    recomputable bindings.  Otherwise, it's pretty similar.
+    recomputable bindings. Otherwise, it's pretty similar. With the addition of arrow functions to ES6, this is now
+    considerably easier, though note that all ES6 arrow functions bind to the external `this`. This is a particular
+    issue when writing event handlers, where overwriting the default `this` (which refers to the element on which the
+    event was triggered) is often undesirable.
 
     It's worth showing a quick example of what that would look like:
 
@@ -132,5 +147,10 @@ block content
       ])
     });
     ```
+
+    **What about TypeScript?**
+
+    We've not had the chance to experiment too much with TypeScript, but we are hope to add support and
+    a TypeScript definition file for the framework. Like ES6, TypeScript comes with fat arrow functions.
 
     [Related Work]: related.html

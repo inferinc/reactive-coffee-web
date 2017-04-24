@@ -1,6 +1,6 @@
 extends layouts/documentation
 block title
-  | Tutorial - reactive.coffee
+  | Tutorial - bobtail
 block content
   :markdown
     Tutorial
@@ -8,34 +8,41 @@ block content
 
     ## Getting Started
 
-    Reactive depends on jQuery and Underscore:
+    Bobtail depends on jQuery and Underscore:
 
     ```html
     <script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js'></script>
     <script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js'></script>
     ```
 
-    Reactive is hosted on [cdnjs] as well, so you can source directly from there:
+    Bobtail is hosted on [cdnjs] as well, so you can source directly from there:
 
     ```html
     <script src='//cdnjs.cloudflare.com/ajax/libs/reactive-coffee/1.2.4/reactive-coffee.min.js'></script>
     ```
 
-    If you're using [Bower], you can also add Reactive as a dependency for your
+    If you're using [Bower], you can also add Bobtail as a dependency for your
     project:
 
     ```
-    bower install --save reactive-coffee
+    bower install --save bobtail
     ```
 
     If you're using node (or browserify, etc.), you can install via NPM:
 
     ```
-    npm install --save reactive-coffee
+    npm install --save bobtail
     ```
 
+    If you're using [Bower](http://bower.io/), you can also add Bobtail as a dependency for your project:
+
+        bower install --save bobtail
+
+    This will transitively pull in the above dependencies for Bobtail (temp. note: bower
+    [has issues solving dependency version constraints](https://github.com/bower/bower/issues/540)).
+
     This will transitively pull in the above dependencies for
-    Reactive (temp. note: bower [has issues solving dependency version
+    Bobtail (temp. note: bower [has issues solving dependency version
     constraints][bower bug]).
 
     [Bower]: http://bower.io/
@@ -205,7 +212,7 @@ block content
 
     These bindings can form an arbitrary DAG.
 
-    Reactive programming is the same concept behind how spreadsheet calculations
+    Bobtail programming is the same concept behind how spreadsheet calculations
     work, and is similar to the data-binding feature present in many of the other
     frameworks—which is an effective paradigm for frontend UI development—but
     instead of being exclusively applied to view components, typically confined to
@@ -362,12 +369,12 @@ block content
 
     Then `mar` will be re-evaluated only when the `"Mar"` key is
     changed/removed, and `dec` will only when the `"Dec"` key is inserted.
-    
+
     ## Object-Oriented Programming: A Pattern for Public and Private cells.
-    Often, when using an object-oriented approach, one wants to expose values to the user without permitting them 
-    to change those values directly. When using reactive, we would also want the user to be able to subscribe 
-    listeners. to these private cells. In addition, we still need to be able to set the value of the cell internally. 
-    To achieve this,  we can make use of `rx.bind`, which returns a `DepCell` object. These objects do not have a 
+    Often, when using an object-oriented approach, one wants to expose values to the user without permitting them
+    to change those values directly. When using bobtail, we would also want the user to be able to subscribe
+    listeners. to these private cells. In addition, we still need to be able to set the value of the cell internally.
+    To achieve this,  we can make use of `rx.bind`, which returns a `DepCell` object. These objects do not have a
     set method, and thus cannot be directly mutated by the user:
 
     ```coffeescript
@@ -382,20 +389,20 @@ block content
     inc.increment() # prints 1
     inc.value.set(42) # error, not allowed.
     ```
-    
+
     The usefulness of this pattern is not limited to object oriented programming. We can use this any time we wish to return
     a read-only cell:
-    
+
     ```coffeescript
-    autoIncrementedCell = (start) -> 
+    autoIncrementedCell = (start) ->
       value = rx.cell(start)
       setInterval(value.set(value.get() + 1), 1000)
       return bind -> value.get()
-      
+
     c = autoIncrementedCell(0)
     c.onSet.sub ([oldVal, newVal]) -> console.log(newVal)
     ```
-    
+
     ## Static Templates
 
     Now for a brief jump to something entirely different from reactive
@@ -590,9 +597,9 @@ block content
     You can also add your own special attribute by inserting a function into
     the `specialAttrs` global structure.
 
-    ## Reactive Templates
+    ## Bobtail Templates
 
-    Reactive templates tie together the UI-building style from the previous section
+    Bobtail templates tie together the UI-building style from the previous section
     with the reactive programming primitives from earlier.
 
     Now, you *could* just write explicit imperative code to transform the DOM
@@ -768,7 +775,7 @@ block content
     (These behaviors may be folded into core `rxt` behavior if it proves to be
     a sensible default.)
 
-    ## More on Arrays and Reactive Templates
+    ## More on Arrays and Bobtail Templates
 
     Arrays also support an `indexed` method which returns a copy of the array,
     but which actually tracks the indices of its elements, such that when you
@@ -982,7 +989,7 @@ block content
     more details), or read more on the [motivation/design rationale][design]
     behind the library.
 
-    Otherwise, go forth and build some web apps using Reactive!  [Drop us a
+    Otherwise, go forth and build some web apps using Bobtail!  [Drop us a
     line][contact] if you do and would like to share your work on the website.
 
     [advanced]: advanced.html

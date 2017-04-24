@@ -51,7 +51,7 @@ module.exports = (grunt) ->
               href = link.attr('href')
               check = (page, anchor) ->
                 if _(page).startsWith('/')
-                  if page != '/reactive-coffee/'
+                  if page != '/bobtail/'
                     grunt.fail.warn "Bad abs. link in #{filepath}: #{page}"
                   page = 'index.html'
                 else

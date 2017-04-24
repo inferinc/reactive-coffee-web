@@ -1,6 +1,6 @@
 extends layouts/documentation
 block title
-  | API Reference - reactive.coffee
+  | API Reference - bobtail
 block content
   :markdown
     API Reference
@@ -94,6 +94,10 @@ block content
       contents of the array to determine what has changed.  Similar in
       mechanism to `SrcArray.update`.  `diff` is an optional diff function (see
       `SrcArray.update` documentation) and defaults to `rx.basicDiff()`.
+    - `cellToMap(cell)`: given an `ObsCell` of a primitive JS object, return a
+      `DepMap` that, in response to future new values of the object, issues the
+       minimal set of events by diffing the contents of the object to determine
+       what has changed.
     - `basicDiff([key])`: returns a diff function that takes two arrays and
       uses the given key function, which defaults to `rx.smartUidify`, to
       efficiently hash-compare elements between the two arrays.  Used by
@@ -117,6 +121,11 @@ block content
       Only once the transaction ends will all events be fired (at which time the
       state of the source cells will no longer be in flux, and thus a
       consistent view of the universe can always be maintained).
+    - `hideMutationWarnings(f)`: Run the given function, but suppress console
+      logging of mutation warnings and firing of the `onMutationWarnings` event.
+      This is useful when you need to mutate a cell when already within a bind
+      context, but you know that doing so is safe--i.e., will not trigger any
+      infinite loops or lead to inconsistent state.
 
     **`ObsCell` members**
 

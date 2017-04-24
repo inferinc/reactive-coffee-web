@@ -1,6 +1,6 @@
 extends layouts/documentation
 block title
-  | Change Log - reactive.coffee
+  | Change Log - bobtail
 block content
   :markdown
     Change Log
@@ -9,9 +9,27 @@ block content
     Changes for each version are roughly listed in order of descending
     noteworthiness.
 
-    **v1.3.0 – under development**
+    **v2.0.0 - under development**
 
     - Add SVG support ([#14]; contributed by [@eizenberg] and [@drernie]).
+
+    **v1.4.2 - 2017-03-01**
+    - Renamed package to **Bobtail**--stay tuned for more info!
+    - Added `hideMutationWarnings` utility function
+    - Fixed refresh condition for `ObsArray.at`. Previously it would only refresh if a change started on its
+      index. We now refresh if there is a net addition or removal of elements before or at i, or if the value at i is
+      changed.
+    - Fixed issue where `SrcArray.push` and `SrcArray.replace` triggered a subscription.
+    - Fixed `bower.json` main field to list a single file, per more recent bower syntax.
+    - Upgraded bower JQuery dependency to 2.1.1, consistent with package.json.
+
+    **v1.3.0 – 2016-03-10**
+
+    - (Breaking change) Change map event handlers to take multiple keys at a time rather than a single key at a time.
+    - (Breaking change) Improve `rx.flatten` to perform a fully recursive flatten, recursing into primitive arrays, reactive arrays, and reactive cells.
+    - Add `cellToMap` function, analogous to `cellToArray`.
+    - Fix bug involving a dropped `this` in the `IndexedDepArray.onChange`.
+    - Fix bug where dependent arrays did not correctly update when set to empty.
 
     **v1.2.4 – 2015-08-25**
 
@@ -124,7 +142,7 @@ block content
     [@marcschneider]: https://github.com/marcschneider
     [@shreeve]: https://github.com/shreeve
 
-    [#14]: https://github.com/yang/reactive-coffee/issues/14
-    [#49]: https://github.com/yang/reactive-coffee/issues/49
-    [#52]: https://github.com/yang/reactive-coffee/issues/52
-    [#58]: https://github.com/yang/reactive-coffee/issues/58
+    [#14]: https://github.com/inferinc/bobtail/issues/14
+    [#49]: https://github.com/inferinc/bobtail/issues/49
+    [#52]: https://github.com/inferinc/bobtail/issues/52
+    [#58]: https://github.com/inferinc/bobtail/issues/58

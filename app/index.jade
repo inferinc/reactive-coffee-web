@@ -1,14 +1,14 @@
 extends layouts/base
 block title
-  | Reactive Coffee - A lightweight CoffeeScript library/DSL for reactive
+  | Bobtail Coffee - A lightweight CoffeeScript library/DSL for reactive
   | programming and for declaratively building scalable web UIs
 block header
   .overlay
   .inner
-    h1: a(href='/reactive-coffee/') reactive.coffee
+    h1: a(href='/reactive-coffee/') bobtail
     h2
       | A lightweight CoffeeScript library/DSL for reactive programming and for declaratively building scalable web UIs
-    a.button(href='https://github.com/yang/reactive-coffee')
+    a.button(href='https://github.com/inferinc/bobtail')
       small View project on
       | GitHub
   nav.top-nav
@@ -48,7 +48,7 @@ block body
       overview.*
       </div>
 
-      Get a quick taste of reactive.coffee.  You can [play with this example on
+      Get a quick taste of bobtail.  You can [play with this example on
       jsFiddle][fiddle], see a [complete TodoMVC example][TodoMVC], or head
       directly to the [tutorial].
 
@@ -65,7 +65,7 @@ block body
 
       tasks = rx.array([
         new Task('Get milk', 'important', false)
-        new Task('Play with Reactive Coffee', 'critical', false)
+        new Task('Play with Bobtail Coffee', 'critical', false)
         new Task('Walk the dog', 'meh', false)
       ])
 
@@ -143,7 +143,7 @@ block body
       [design]: design.html
       [related]: related.html
 
-      [TodoMVC]: https://github.com/yang/reactive-coffee/blob/master/examples/todomvc/index.jade
+      [TodoMVC]: https://github.com/inferinc/bobtail/blob/master/examples/todomvc/index.jade
       [reactive programming]: https://en.wikipedia.org/wiki/Reactive_programming
 
       [blog]: http://eng.infer.com/post/57598286968/introducing-reactive-coffee-reactive-programming-and
@@ -151,7 +151,7 @@ block body
       ## Contributors
 
       The individuals who through their time, effort, and feedback have made
-      reactive.coffee possible:
+      bobtail possible:
 
       - [Travis Athougies](https://github.com/tathougies)
       - Cassie Doll
@@ -168,14 +168,14 @@ block body
       - [Yang Zhang](https://github.com/yang)
 
   aside#sidebar
-    a.button(href='https://github.com/yang/reactive-coffee/zipball/1.2.4')
+    a.button(href='https://github.com/inferinc/bobtail/zipball/1.2.4')
       small Download version 1.2.4
       |  .zip file
-    a.button(href='https://github.com/yang/reactive-coffee/tarball/1.2.4')
+    a.button(href='https://github.com/inferinc/bobtail/tarball/1.2.4')
       small Download version 1.2.4
       |  .tar.gz file
     p.repo-owner
-      | Released 2015-08-25. 
+      | Released 2015-08-25.
       a(href='changes.html') Changes
       | .
     :markdown
